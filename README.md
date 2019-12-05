@@ -1,4 +1,4 @@
-# Oink Chat 🐽
+# Oink Chat 
 
 This is a network-based multithreaded client-server chat app we were asked to develop in the context of our first Software Engineering master’s year, in the C#/.NET course.
 
