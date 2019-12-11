@@ -25,6 +25,7 @@ namespace Server.Handlers
             {
                 "CreateTopic" => CreateTopic(new Topic(answer[1])),
                 "DisplayTopics" => DisplayTopics(),
+                "JoinTopic" => JoinTopic(answer[1]),
                 _ => new DumbMessage("The correct syntax is <CreateTopic|DisplayTopics|JoinTopic>"),
             };
         }
@@ -37,6 +38,13 @@ namespace Server.Handlers
         private IMessage DisplayTopics()
         {
             return _data.GetAllTopics();
+        }
+
+        private IMessage JoinTopic(string name)
+        {
+            _session.JoinTopic = _data.getTopicByTitle(name);
+            _session.JoinTopic.Subscription(_session.Dispatcher.RecieveMessage);
+            return _session.JoinTopic != null ? new DumbMessage("You just joined the topic "+name) : new DumbMessage("Topic didn't exist");
         }
     }
 }

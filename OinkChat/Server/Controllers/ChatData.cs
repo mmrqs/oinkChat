@@ -78,5 +78,12 @@ namespace Server.Controllers
             _topicSemaphore.Release();
             return new DumbMessage(allTopics);
         }
+
+        public Topic getTopicByTitle(String name)
+        {
+            _topicSemaphore.WaitOne();
+            Topic t = _topics.Find(u => u.Title.Equals(name));
+            return t;
+        }
     }
 }

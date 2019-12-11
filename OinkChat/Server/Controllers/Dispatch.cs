@@ -18,6 +18,7 @@ namespace Server.Controllers
             _client = client;
             _data = chatData;
             _session = new DispatchSession();
+            _session.Dispatcher = this;
         }
 
         public void HandleClient()
@@ -34,5 +35,11 @@ namespace Server.Controllers
                     .Handle(input));
             }
         }
+        public void RecieveMessage(object sender, ChatMessage c)
+        {
+            Communicator.Send(_client.GetStream(), c);
+        }
     }
+    
+    
 }
