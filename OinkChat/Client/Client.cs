@@ -1,9 +1,7 @@
 ﻿using Shared;
 using Shared.Messages;
 using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Client
 {
@@ -27,7 +25,6 @@ namespace Client
             while(true)
             {
                 string input = Console.ReadLine();
-                Console.WriteLine(input);
 
                 Communicator.Send(_tcpClient.GetStream(), new DumbMessage(input));
                 Console.WriteLine(Communicator.Receive(_tcpClient.GetStream()));

@@ -1,5 +1,6 @@
 ﻿using System;
 using Shared;
+using Server.Controllers;
 
 namespace Server
 {
@@ -7,7 +8,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Server server = new Server(Constants.Hostname, Constants.Port);
+            ChatServer server = new ChatServer(Constants.Hostname, Constants.Port);
             server.Start();
         }
     }

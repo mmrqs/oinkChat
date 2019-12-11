@@ -1,23 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 
-namespace Server
+namespace Server.Controllers
 {
-    class Server
+    class ChatServer
     {
         private int _port;
         private IPAddress _address;
 
         private TcpListener _listener;
 
-        public Server(string address, int port)
+        private ChatData _chatData;
+
+        public ChatServer(string address, int port)
         {
             _address = IPAddress.Parse(address);
             _port = port;
+
+            _chatData = new ChatData();
         }
 
         public void Start()
@@ -30,8 +32,10 @@ namespace Server
                 TcpClient client = _listener.AcceptTcpClient();
                 Console.WriteLine("Connected to " + client);
 
-                new Thread(new Dispatch(client).HandleClient).Start();
+                new Thread(new Dispatch(client, _chatData).HandleClient).Start();
             }
         }
+
+        public ChatData ChatData { get { return _chatData; } }
     }
 }
