@@ -31,7 +31,7 @@ namespace Server.Handlers
 
         private IMessage CreateTopic(Topic  topic)
         {
-            return _data.AddTopic(topic) ? new DumbMessage("A new topic named"+topic.Title+"is created. ") : new DumbMessage("The topic " + topic.Title + " already exists.");
+            return _data.AddTopic(topic) ? new DumbMessage("A new topic named "+topic.Title+" is created. ") : new DumbMessage("The topic " + topic.Title + " already exists.");
         }
 
         private IMessage DisplayTopics()
