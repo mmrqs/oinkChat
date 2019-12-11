@@ -9,21 +9,21 @@ namespace Server.Utilities
     {
         private T _subject;
         private string _backupName;
-        private int _backupInterval;
         private BinaryFormatter _bf;
         private FileStream _fs;
+        private Semaphore _backupSemaphore;
 
-        public Backer(string backupName, int backupInterval)
+        public Backer(string backupName)
         {
             _backupName = backupName;
-            _backupInterval = backupInterval;
+            _backupSemaphore = new Semaphore(1, 1);
             _bf = new BinaryFormatter();
             _fs = new FileStream(_backupName, FileMode.OpenOrCreate);
         }
 
         public bool HasData() 
         {
-            return _fs.Length != 0; 
+            return _fs.Length != 0;
         }
 
         public void SetSubject(T subject)
@@ -33,19 +33,18 @@ namespace Server.Utilities
 
         public void Backup()
         {
-            while (true)
-            {
-                _fs = new FileStream(_backupName, FileMode.Create);
+            _backupSemaphore.WaitOne();
+            _fs = new FileStream(_backupName, FileMode.Create);
 
-                _bf.Serialize(_fs, _subject);
-                _fs.Close();
-                Console.WriteLine(_backupName + " backed up !");
-                Thread.Sleep(_backupInterval);
-            }
+            _bf.Serialize(_fs, _subject);
+            _fs.Close();
+            _backupSemaphore.Release();
+            Console.WriteLine(_backupName + " backed up !");
         }
 
         public T Read()
         {
+            _backupSemaphore.WaitOne();
             T results;
             if (_fs.Length != 0)
             {
@@ -56,6 +55,7 @@ namespace Server.Utilities
                 results = default;
             }
             _fs.Close();
+            _backupSemaphore.Release();
             return results;
         }
     }

@@ -9,11 +9,17 @@ namespace Server.Controllers
     {
         private List<User> _users;
         private Semaphore _usersSemaphore;
+        private Backer<List<User>> _userBacker;
 
         public ChatData()
         {
-            _users = LaunchUserBackup();
             _usersSemaphore = new Semaphore(1, 1);
+
+            _userBacker = new Backer<List<User>>("users");
+
+            _users = _userBacker.HasData() ?
+                _userBacker.Read() : new List<User>();
+            _userBacker.SetSubject(_users);
         }
 
         public bool AuthUser(User user)
@@ -31,23 +37,10 @@ namespace Server.Controllers
             if(inexists)
             {
                 _users.Add(user);
+                _userBacker.Backup();
             }
             _usersSemaphore.Release();
             return inexists;
-        }
-
-        private static List<User> LaunchUserBackup()
-        {
-            Backer<List<User>> userBacker = new Backer<List<User>>("users", 5000);
-
-            List<User> users = userBacker.HasData() ?
-                userBacker.Read() : new List<User>();
-
-            userBacker.SetSubject(users);
-
-            new Thread(userBacker.Backup).Start();
-
-            return users;
         }
     }
 }
