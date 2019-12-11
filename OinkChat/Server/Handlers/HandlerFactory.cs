@@ -12,6 +12,11 @@ namespace Server.Handlers
                 return new LogHandler(data, session);
             }
 
+            if (!session.JoinTopic)
+            {
+                return new TopicHandler(data, session);
+            }
+            
             throw new NotImplementedException();
         }
     }
