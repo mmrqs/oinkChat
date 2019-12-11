@@ -29,7 +29,7 @@ namespace Server.Handlers
             {
                 "signin" => Signin(claim),
                 "signup" => Signup(claim),
-                _ => new DumbMessage("An unkown error occurred."),
+                _ => new DumbMessage("The correct syntax is <signin|signup> <pseudo> <password>"),
             };
         }
 
@@ -47,14 +47,9 @@ namespace Server.Handlers
 
         private IMessage Signup(User claim)
         {
-            if (_data.AddUser(claim))
-            {
-                return new DumbMessage("An account was created for user " + claim.Pseudo);
-            }
-            else
-            {
-                return new DumbMessage("The user " + claim.Pseudo + " already exists.");
-            }
+             return _data.AddUser(claim) ? 
+                new DumbMessage("An account was created for user " + claim.Pseudo) :
+                new DumbMessage("The user " + claim.Pseudo + " already exists."); ;
         }
     }
 }

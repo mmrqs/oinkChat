@@ -4,31 +4,23 @@ using Server.Utilities;
 using System.Collections.Generic;
 using System.Threading;
 using Shared.Messages;
+using System.Linq;
 
 namespace Server.Controllers
 {
     class ChatData
     {
-        private List<User> _users;
-        private List<Topic> _topics;
         private Semaphore _usersSemaphore;
         private Semaphore _topicSemaphore;
-        private Backer<List<User>> _userBacker;
-        private Backer<List<Topic>> _topicBacker;
+
+        private Backer<List<User>> _ub;
+        private Backer<List<Topic>> _tb;
         
         public ChatData()
         {
-            _userBacker = new Backer<List<User>>("users");
-            _topicBacker = new Backer<List<Topic>>("topics");
+            _ub = new Backer<List<User>>("users", new List<User>());
+            _tb = new Backer<List<Topic>>("topics", new List<Topic>());
             
-            _users = _userBacker.HasData() ?
-                _userBacker.Read() : new List<User>();
-            _userBacker.SetSubject(_users);
-            
-            _topics = _topicBacker.HasData() ?
-                _topicBacker.Read() : new List<Topic>();
-            
-            _topicBacker.SetSubject(_topics);
             _usersSemaphore = new Semaphore(1, 1);
             _topicSemaphore = new Semaphore(1, 1);
         }
@@ -36,7 +28,7 @@ namespace Server.Controllers
         public bool AuthUser(User user)
         {
             _usersSemaphore.WaitOne();
-            User result = _users.Find(u => u.Equals(user));
+            User result = _ub.Subject.Find(u => u.Equals(user));
             _usersSemaphore.Release();
             return result != null;
         }
@@ -44,46 +36,46 @@ namespace Server.Controllers
         public bool AddUser(User user)
         {
             _usersSemaphore.WaitOne();
-            bool inexists = (_users.Find(u => u.Pseudo.Equals(user.Pseudo)) == null);
+            bool inexists = _ub.Subject.Find(u => u.Pseudo.Equals(user.Pseudo)) == null;
             if(inexists)
             {
-                _users.Add(user);
-                _userBacker.Backup();
+                _ub.Subject.Add(user);
+                _ub.Backup();
             }
             _usersSemaphore.Release();
             return inexists;
         }
         public bool AddTopic(Topic topic)
         {
-            
-           _topicSemaphore.WaitOne();
-            bool inexists = (_topics.Find(u => u.Title.Equals(topic.Title)) == null);
+            _topicSemaphore.WaitOne();
+            bool inexists = _tb.Subject.Find(t => t.Title.Equals(topic.Title)) == null;
             if(inexists)
             {
-                _topics.Add(topic);
+                _tb.Subject.Add(topic);
+                _tb.Backup();
             }
             _topicSemaphore.Release();
             return inexists;
         }
  
-
-        public IMessage GetAllTopics()
+        public string GetTopicList()
         {
-            string allTopics = "";
             _topicSemaphore.WaitOne();
-            foreach (Topic t in _topics)
-            {
-                allTopics += t.Title + Environment.NewLine;
-            }
+
+            string list = _tb.Subject.Count > 0 ?
+                string.Join(Environment.NewLine, _tb.Subject.Select(t => t.Title).ToArray()) : 
+                "No avalaible topics.";
+
             _topicSemaphore.Release();
-            return new DumbMessage(allTopics);
+            return list;
         }
 
-        public Topic getTopicByTitle(String name)
+        public Topic GetTopicByTitle(string name)
         {
             _topicSemaphore.WaitOne();
-            Topic t = _topics.Find(u => u.Title.Equals(name));
-            return t;
+            Topic res = _tb.Subject.Find(t => t.Title.Equals(name));
+            _topicSemaphore.Release();
+            return res;
         }
     }
 }

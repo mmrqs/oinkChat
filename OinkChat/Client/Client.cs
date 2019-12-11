@@ -24,6 +24,7 @@ namespace Client
 
             while(true)
             {
+                Console.Write("> ");
                 string input = Console.ReadLine();
 
                 Communicator.Send(_tcpClient.GetStream(), new DumbMessage(input));

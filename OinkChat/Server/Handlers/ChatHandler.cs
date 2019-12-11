@@ -3,12 +3,12 @@ using Shared.Messages;
 
 namespace Server.Handlers
 {
-    class MessageHandler : IHandler
+    class ChatHandler : IHandler
     {
         private ChatData _data;
         private DispatchSession _session;
 
-        public MessageHandler(ChatData data, DispatchSession session)
+        public ChatHandler(ChatData data, DispatchSession session)
         {
             _data = data;
             _session = session;
@@ -17,7 +17,7 @@ namespace Server.Handlers
         public IMessage Handle(IMessage input)
         {
             string answer = input.ToString();
-            _session.JoinTopic.SendEventMessage(answer);
+            _session.TopicJoined.SendEventMessage(answer);
             return new DumbMessage("");
         }
     }

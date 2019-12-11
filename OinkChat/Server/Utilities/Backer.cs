@@ -8,55 +8,62 @@ namespace Server.Utilities
     class Backer<T>
     {
         private T _subject;
-        private string _backupName;
-        private BinaryFormatter _bf;
-        private FileStream _fs;
-        private Semaphore _backupSemaphore;
 
-        public Backer(string backupName)
+        private string _fileName;
+        private Semaphore _fileSemaphore;
+
+        private BinaryFormatter _bf;
+
+        public Backer(string fileName, T subject)
         {
-            _backupName = backupName;
-            _backupSemaphore = new Semaphore(1, 1);
+            _subject = subject;
+
+            _fileName = fileName;
+            _fileSemaphore = new Semaphore(1, 1);
+
             _bf = new BinaryFormatter();
-            _fs = new FileStream(_backupName, FileMode.OpenOrCreate);
+
+            Read();
         }
 
         public bool HasData() 
         {
-            return _fs.Length != 0;
-        }
+            _fileSemaphore.WaitOne();
 
-        public void SetSubject(T subject)
-        {
-            _subject = subject;
+            FileStream fs = new FileStream(_fileName, FileMode.OpenOrCreate);
+            long len = fs.Length;
+            fs.Close();
+
+            _fileSemaphore.Release();
+            return len != 0;
         }
 
         public void Backup()
         {
-            _backupSemaphore.WaitOne();
-            _fs = new FileStream(_backupName, FileMode.Create);
+            _fileSemaphore.WaitOne();
 
-            _bf.Serialize(_fs, _subject);
-            _fs.Close();
-            _backupSemaphore.Release();
-            Console.WriteLine(_backupName + " backed up !");
+            FileStream fs = new FileStream(_fileName, FileMode.Create);
+            _bf.Serialize(fs, _subject);
+            fs.Close();
+
+            _fileSemaphore.Release();
+            Console.WriteLine(_fileName + " backed up !");
         }
 
-        public T Read()
+        public void Read()
         {
-            _backupSemaphore.WaitOne();
-            T results;
-            if (_fs.Length != 0)
-            {
-                results = (T)_bf.Deserialize(_fs);
-            }
-            else
-            {
-                results = default;
-            }
-            _fs.Close();
-            _backupSemaphore.Release();
-            return results;
+            _fileSemaphore.WaitOne();
+
+            FileStream fs = new FileStream(_fileName, FileMode.OpenOrCreate);
+            _subject = fs.Length != 0 ? (T)_bf.Deserialize(fs) : _subject;
+            fs.Close();
+
+            _fileSemaphore.Release();
+        }
+
+        public T Subject
+        {
+            get { return _subject; }
         }
     }
 }

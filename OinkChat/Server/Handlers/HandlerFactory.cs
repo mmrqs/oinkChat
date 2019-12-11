@@ -10,15 +10,14 @@ namespace Server.Handlers
             if(!session.IsLogged)
             {
                 return new LogHandler(data, session);
-            }
-
-            if (session.JoinTopic == null)
+            } 
+            else if (session.TopicJoined == null)
             {
                 return new TopicHandler(data, session);
             }
             else
             {
-                return new MessageHandler(data, session);
+                return new ChatHandler(data, session);
             }
             
             throw new NotImplementedException();

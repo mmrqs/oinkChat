@@ -35,7 +35,7 @@ namespace Server.Controllers
                     .Handle(input));
             }
         }
-        public void RecieveMessage(object sender, ChatMessage c)
+        public void ReceiveMessage(object sender, ChatMessage c)
         {
             Communicator.Send(_client.GetStream(), c);
         }
