@@ -31,6 +31,11 @@ namespace Server.Models
         {
             this.MessageSenderEvent += method;
         }
+
+        public void Unsubscription(MessageSenderEventHandler method)
+        {
+            this.MessageSenderEvent -= method;
+        }
         
         public void SendEventMessage(String message)
         {

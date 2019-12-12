@@ -1,5 +1,6 @@
 using System;
 using Server.Controllers;
+using Server.Models;
 using Shared.Messages;
 
 namespace Server.Handlers
@@ -19,7 +20,16 @@ namespace Server.Handlers
         {
             string answer = DateTime.Now.ToString("g") + "  " + _session.PseudoClient + "  ";
             answer += input.ToString();
-            _session.TopicJoined.SendEventMessage(answer);
+            
+            if (input.ToString().Equals("exit"))
+            {
+                return new TopicHandler(_data,_session).Handle(input);
+            }
+            else
+            {
+                _session.TopicJoined.SendEventMessage(answer);
+            }
+            
             return null;
         }
     }
