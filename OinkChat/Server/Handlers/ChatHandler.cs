@@ -20,17 +20,18 @@ namespace Server.Handlers
         {
             string answer = DateTime.Now.ToString("g") + "  " + _session.PseudoClient + "  ";
             answer += input.ToString();
+            string topic = _session.TopicJoined.Title;
             
-            if (input.ToString().Equals("exit"))
-            {
-                return new TopicHandler(_data,_session).Handle(input);
-            }
-            else
+            if (!input.ToString().Equals("exit"))
             {
                 _session.TopicJoined.SendEventMessage(answer);
+                return null;
             }
-            
-            return null;
-        }
+
+            _session.TopicJoined.Unsubscription(_session.Sender.ReceiveMessage);
+            _session.TopicJoined = null;
+            return new DumbMessage("You exited the topic " + topic);
+        
+         }
     }
 }

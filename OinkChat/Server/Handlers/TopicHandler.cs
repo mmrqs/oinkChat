@@ -25,7 +25,6 @@ namespace Server.Handlers
                 "display" => DisplayTopics(),
                 "join" => JoinTopic(answer[1]),
                 "help" => HelpMessage(),
-                "exit" => ExitTopic(),
                 _ => HelpMessage(),
             };
         }
@@ -59,14 +58,7 @@ namespace Server.Handlers
                 "Display a list of every topic : <display>\n" +
                 "Join a topic : <join> <topic name>");
         }
-
-        private Message ExitTopic()
-        {
-            _session.TopicJoined.Unsubscription(_session.Sender.ReceiveMessage);
-            string topic = _session.TopicJoined.Title;
-            _session.TopicJoined = null;
-            return new DumbMessage("You exit the topic" + topic);
-        }
+        
         
     }
 }
