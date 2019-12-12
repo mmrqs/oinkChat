@@ -38,6 +38,7 @@ namespace Server.Handlers
             if (_data.AuthUser(claim))
             {
                 _session.IsLogged = true;
+                _session.PseudoClient = claim.Pseudo;
                 return new DumbMessage("You have successfully been logged ; welcome, " + claim.Pseudo);
             } else
             {
