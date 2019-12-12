@@ -28,7 +28,7 @@ namespace Client
                 string input = Console.ReadLine();
 
                 Communicator.Send(_tcpClient.GetStream(), new DumbMessage(input));
-                Console.WriteLine(Communicator.Receive(_tcpClient.GetStream()));
+                Console.WriteLine(Communicator.Receive(_tcpClient.GetStream()).ToString());
             }
         }
     }

@@ -38,12 +38,6 @@ namespace Server.Controllers
             
             receiver.Start();
             sender.Start();
-            
-            
         }
-        
-        
     }
-    
-    
 }

@@ -30,7 +30,5 @@ namespace Server.Controllers
         {
             Communicator.Send(_client.GetStream(), input);
         }
-        
-        
     }
 }

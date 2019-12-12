@@ -47,7 +47,6 @@ namespace Server.Handlers
             if (_session.TopicJoined == null) 
                 return new DumbMessage("Topic " + name + " doesn't exist");
 
-            
             _session.TopicJoined.Subscription(_session.Sender.ReceiveMessage);
             return new DumbMessage("You joined the topic " + name);
         }

@@ -11,7 +11,7 @@ namespace Shared.Messages
 
         public DumbMessage(string text)
         {
-            this._text = text;
+            _text = text;
         }
 
         public override string ToString()

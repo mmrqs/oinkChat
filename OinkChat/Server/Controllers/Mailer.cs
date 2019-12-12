@@ -23,22 +23,20 @@ namespace Server.Controllers
         {
             while (true)
             {
-                
+                // lol
             }
         }
-        public void Action(object sender, Message message )
+        public void Action(object sender, Message message)
         {
             Message m = new HandlerFactory().GetHandler(_data, _session).Handle(message);
-            
-            if (this.MessageEvent != null)
-            {
-                this.MessageEvent(this, m);
-            }
+
+            if (m != null )
+                MessageEvent?.Invoke(this, m);
         }
         
         public void Subscription(MessageEventHandler method)
         {
-            this.MessageEvent += method;
+            MessageEvent += method;
         }
     }
 }

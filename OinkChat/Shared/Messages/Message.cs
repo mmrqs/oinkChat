@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Shared.Messages
 {
+    [Serializable]
     public abstract class Message : EventArgs
     {
         public abstract new string ToString();

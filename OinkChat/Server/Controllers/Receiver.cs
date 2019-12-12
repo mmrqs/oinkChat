@@ -22,16 +22,17 @@ namespace Server.Controllers
                
                 Console.WriteLine("Received " + input);
                 
-                if (this.MessageReceivedEvent != null)
+                if (input != null && MessageReceivedEvent != null)
                 {
-                    this.MessageReceivedEvent(this, input);
+                    MessageReceivedEvent(this, input);
+                    input = null;
                 }
             }
         }
         
         public void Subscription(MessageReceivedEventHandler method)
         {
-            this.MessageReceivedEvent += method;
+            MessageReceivedEvent += method;
         }
     }
 }

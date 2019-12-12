@@ -18,7 +18,7 @@ namespace Server.Handlers
         {
             string answer = input.ToString();
             _session.TopicJoined.SendEventMessage(answer);
-            return new DumbMessage("");
+            return null;
         }
     }
 }
