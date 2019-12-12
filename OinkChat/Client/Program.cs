@@ -8,7 +8,7 @@ namespace Client
         static void Main(string[] args)
         {
             Client client = new Client(Constants.Hostname, Constants.Port);
-            client.Start();
+            client.Run();
         }
     }
 }

@@ -5,16 +5,15 @@ using Shared.Messages;
 namespace Server.Controllers
 {
     public delegate void MessageEventHandler(object sender, Message e);
-    class Mailer
+    class ServerMailer
     {
-        private ChatData _data;
-        private TcpClient _client;
-        private DispatchSession _session;
         private event MessageEventHandler MessageEvent;
         
-        public Mailer(TcpClient client, ChatData data, DispatchSession session)
+        private ChatData _data;
+        private DispatchSession _session;
+        
+        public ServerMailer(ChatData data, DispatchSession session)
         {
-            _client = client;
             _data = data;
             _session = session;
         }

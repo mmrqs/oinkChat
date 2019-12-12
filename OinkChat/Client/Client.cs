@@ -1,15 +1,25 @@
 ﻿using Shared;
+using Shared.Messagers;
 using Shared.Messages;
 using System;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Client
 {
-    class Client
+    public delegate void MessageEventHandler(object sender, Message e);
+
+    public class Client
     {
+        private event MessageEventHandler MessageEvent;
+
         private string _hostname;
         private int _port;
-        private TcpClient _tcpClient;
+
+        private Receiver _r;
+        private Sender _s;
+
+        private TcpClient _client;
 
         public Client(string hostname, int port)
         {
@@ -17,19 +27,39 @@ namespace Client
             _port = port;
         }
 
-        public void Start()
+        private void Init()
         {
-            _tcpClient = new TcpClient(_hostname, _port);
+            _client = new TcpClient(_hostname, _port);
             Console.WriteLine("Connected");
 
-            while(true)
-            {
-                Console.Write("> ");
-                string input = Console.ReadLine();
+            _r = new Receiver(_client);
+            _s = new Sender(_client);
 
-                Communicator.Send(_tcpClient.GetStream(), new DumbMessage(input));
-                Console.WriteLine(Communicator.Receive(_tcpClient.GetStream()).ToString());
+            _r.Subscription(Do);
+            Subscription(_s.ReceiveMessage);
+        }
+
+        public void Run()
+        {
+            Init();
+
+            new Thread(_s.Run).Start();
+            new Thread(_r.Run).Start();
+
+            while (true) 
+            {
+                MessageEvent(this, new DumbMessage(Console.ReadLine()));
             }
+        }
+
+        public void Do(object sender, Message message)
+        {
+            Console.WriteLine("$ " + message.ToString());
+        }
+
+        public void Subscription(MessageEventHandler method)
+        {
+            MessageEvent += method;
         }
     }
 }

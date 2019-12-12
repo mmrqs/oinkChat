@@ -1,21 +1,16 @@
+using System;
 using System.Net.Sockets;
-using Server.Handlers;
-using Shared;
 using Shared.Messages;
 
-namespace Server.Controllers
+namespace Shared.Messagers
 {
-    class Sender
+    public class Sender
     {
         private TcpClient _client;
-        private ChatData _data;
-        private DispatchSession _session;
         
-        public Sender(TcpClient client, ChatData data, DispatchSession session)
+        public Sender(TcpClient client)
         {
             _client = client;
-            _data = data;
-            _session = session;
         }
 
         public void Run()

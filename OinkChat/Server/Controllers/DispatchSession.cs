@@ -1,4 +1,5 @@
 ﻿using Server.Models;
+using Shared.Messagers;
 
 namespace Server.Controllers
 {
