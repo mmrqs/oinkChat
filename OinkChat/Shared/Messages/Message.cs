@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Shared.Messages
 {
-    public interface IMessage
+    public abstract class Message : EventArgs
     {
-        string ToString();
+        public abstract new string ToString();
     }
 }

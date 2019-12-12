@@ -8,16 +8,16 @@ namespace Shared
 {
     public class Communicator
     {
-        public static void Send(Stream s, IMessage message)
+        public static void Send(Stream s, Message message)
         {
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             binaryFormatter.Serialize(s, message);
         }
 
-        public static IMessage Receive(Stream s)
+        public static Message Receive(Stream s)
         {
             BinaryFormatter binaryFormatter = new BinaryFormatter(); 
-            return (IMessage)binaryFormatter.Deserialize(s);
+            return (Message)binaryFormatter.Deserialize(s);
         }
     }
 }

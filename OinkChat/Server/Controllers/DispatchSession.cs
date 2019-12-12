@@ -6,6 +6,7 @@ namespace Server.Controllers
     {
         public bool IsLogged { get; set; }
         public Topic TopicJoined { get; set; }
-        public Dispatch Dispatcher { get; set; }
+        public Sender Sender { get; set; }
+        public Receiver Receiver { get; set; }
     }
 }

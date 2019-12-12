@@ -16,7 +16,7 @@ namespace Server.Handlers
             _session = session;
         }
         
-        public IMessage Handle(IMessage input)
+        public Message Handle(Message input)
         {
             string[] answer = input.ToString().Split(" ");
             return (answer[0]) switch
@@ -29,29 +29,30 @@ namespace Server.Handlers
             };
         }
 
-        private IMessage CreateTopic(Topic topic)
+        private Message CreateTopic(Topic topic)
         {
             return _data.AddTopic(topic) ? 
                 new DumbMessage("A new topic named " + topic.Title + " is created. ") : 
                 new DumbMessage("The topic " + topic.Title + " already exists.");
         }
 
-        private IMessage DisplayTopics()
+        private Message DisplayTopics()
         {
             return new DumbMessage(_data.GetTopicList());
         }
 
-        private IMessage JoinTopic(string name)
+        private Message JoinTopic(string name)
         {
             _session.TopicJoined = _data.GetTopicByTitle(name);
             if (_session.TopicJoined == null) 
                 return new DumbMessage("Topic " + name + " doesn't exist");
 
-            _session.TopicJoined.Subscription(_session.Dispatcher.ReceiveMessage);
+            
+            _session.TopicJoined.Subscription(_session.Sender.ReceiveMessage);
             return new DumbMessage("You joined the topic " + name);
         }
 
-        private IMessage HelpMessage()
+        private Message HelpMessage()
         {
             return new DumbMessage("You can :\n" +
                 "Create a topic : <create> <topic name>\n" +

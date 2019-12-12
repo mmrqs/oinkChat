@@ -4,7 +4,7 @@ using System;
 namespace Shared.Messages
 {
     [Serializable]
-    public class ChatMessage : System.EventArgs, IMessage
+    public class ChatMessage : Message
     {
         private string _content;
 

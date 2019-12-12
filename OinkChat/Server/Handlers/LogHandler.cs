@@ -15,7 +15,7 @@ namespace Server.Handlers
             _session = session;
         }
 
-        public IMessage Handle(IMessage input)
+        public Message Handle(Message input)
         {
             string[] words = input.ToString().Split(" ");
             if(words.Length != 3)
@@ -33,7 +33,7 @@ namespace Server.Handlers
             };
         }
 
-        private IMessage Signin(User claim)
+        private Message Signin(User claim)
         {
             if (_data.AuthUser(claim))
             {
@@ -45,7 +45,7 @@ namespace Server.Handlers
             }
         }
 
-        private IMessage Signup(User claim)
+        private Message Signup(User claim)
         {
              return _data.AddUser(claim) ? 
                 new DumbMessage("An account was created for user " + claim.Pseudo) :

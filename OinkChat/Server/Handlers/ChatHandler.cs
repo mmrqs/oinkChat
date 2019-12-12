@@ -14,7 +14,7 @@ namespace Server.Handlers
             _session = session;
         }
         
-        public IMessage Handle(IMessage input)
+        public Message Handle(Message input)
         {
             string answer = input.ToString();
             _session.TopicJoined.SendEventMessage(answer);
