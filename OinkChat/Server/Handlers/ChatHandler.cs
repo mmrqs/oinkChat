@@ -1,3 +1,4 @@
+using System;
 using Server.Controllers;
 using Shared.Messages;
 
@@ -16,7 +17,8 @@ namespace Server.Handlers
         
         public Message Handle(Message input)
         {
-            string answer = input.ToString();
+            string answer = DateTime.Now.ToString("g") + "  " + _session.PseudoClient + "  ";
+            answer += input.ToString();
             _session.TopicJoined.SendEventMessage(answer);
             return null;
         }

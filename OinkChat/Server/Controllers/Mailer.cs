@@ -29,8 +29,9 @@ namespace Server.Controllers
         public void Action(object sender, Message message)
         {
             Message m = new HandlerFactory().GetHandler(_data, _session).Handle(message);
-
-            if (m != null )
+            
+            //Invoke : execute the delegate
+            if (m != null)
                 MessageEvent?.Invoke(this, m);
         }
         
