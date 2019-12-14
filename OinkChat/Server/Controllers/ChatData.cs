@@ -12,9 +12,12 @@ namespace Server.Controllers
     {
         private Semaphore _usersSemaphore;
         private Semaphore _topicSemaphore;
+        private Semaphore _usersOnlineSemaphore;
 
         private Backer<List<User>> _ub;
         private Backer<List<Topic>> _tb;
+        
+        private List<Tuple<String, ServerMailer>> usersOnline;
         
         public ChatData()
         {
@@ -77,5 +80,24 @@ namespace Server.Controllers
             _topicSemaphore.Release();
             return res;
         }
+
+        public void AddUserOnline(User user, ServerMailer serverMailer)
+        {
+            _usersOnlineSemaphore.WaitOne();
+            usersOnline.Add(new Tuple<string, ServerMailer>(user.Pseudo,serverMailer));
+            _usersOnlineSemaphore.Release();
+        }
+
+        public List<Tuple<String, ServerMailer>> GetUsersOnline()
+        {
+            _usersOnlineSemaphore.WaitOne();
+            List<Tuple<String, ServerMailer>> l = usersOnline;
+            _usersOnlineSemaphore.Release();
+            return l;
+        }
+        
+            
+        
+         
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Server.Models;
+using Shared;
 using Shared.Messagers;
 
 namespace Server.Controllers
@@ -9,7 +10,6 @@ namespace Server.Controllers
         public Topic TopicJoined { get; set; }
         public Sender Sender { get; set; }
         public Receiver Receiver { get; set; }
-        
         public string PseudoClient { get; set; }
     }
 }

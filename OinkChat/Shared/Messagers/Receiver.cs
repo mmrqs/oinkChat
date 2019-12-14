@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using System.Threading;
 using Shared;
 using Shared.Messages;
 
@@ -8,25 +9,33 @@ namespace Shared.Messagers
     public delegate void MessageReceivedEventHandler(object sender, Message e);
     public class Receiver
     {
-        private event MessageReceivedEventHandler MessageReceivedEvent;
+        public event MessageReceivedEventHandler MessageReceivedEvent;
 
         private TcpClient _client;
-
-        public Receiver(TcpClient client)
+        private Communicator _communicator;
+        public Receiver(TcpClient client, Communicator communicator)
         {
             _client = client;
+            _communicator = communicator;
         }
 
-        public void Run()
+        public void Run(CancellationToken token)
         {
             while (true)
             {
-                Message input = Communicator.Receive(_client.GetStream());
-                
-                if (input != null && MessageReceivedEvent != null)
+                if (token.IsCancellationRequested)
                 {
-                    MessageReceivedEvent(this, input);
-                    input = null;
+                    break;
+                }
+                else 
+                { 
+                    Message input = _communicator.Receive(_client.GetStream());
+                
+                    if (input != null && MessageReceivedEvent != null)
+                    {
+                        MessageReceivedEvent(this, input);
+                        input = null;
+                    }
                 }
             }
         }

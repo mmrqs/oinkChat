@@ -4,6 +4,7 @@ using Shared.Messages;
 using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client
 {
@@ -18,13 +19,20 @@ namespace Client
 
         private Receiver _r;
         private Sender _s;
-
+        private Communicator _communicator;
         private TcpClient _client;
+
+        private CancellationTokenSource _cts;
+        private CancellationToken _token;
 
         public Client(string hostname, int port)
         {
             _hostname = hostname;
             _port = port;
+            _communicator = new Communicator();
+
+            _cts = new CancellationTokenSource();
+            _token = _cts.Token;
         }
 
         private void Init()
@@ -32,8 +40,8 @@ namespace Client
             _client = new TcpClient(_hostname, _port);
             Console.WriteLine("Connected");
 
-            _r = new Receiver(_client);
-            _s = new Sender(_client);
+            _r = new Receiver(_client, _communicator);
+            _s = new Sender(_client, _communicator);
 
             _r.Subscription(Do);
             Subscription(_s.ReceiveMessage);
@@ -43,8 +51,8 @@ namespace Client
         {
             Init();
 
-            new Thread(_s.Run).Start();
-            new Thread(_r.Run).Start();
+            Task.Factory.StartNew(() => _s.Run(_token));
+            Task.Factory.StartNew(() => _r.Run(_token));
 
             while (true) 
             {

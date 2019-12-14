@@ -6,18 +6,37 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Shared
 {
+    public delegate void ClientDecoEventHandler(object sender, Message e);
+
     public class Communicator
     {
-        public static void Send(Stream s, Message message)
+        private event ClientDecoEventHandler ClientDecoEvent;
+        
+        public void Send(Stream s, Message message)
         {
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             binaryFormatter.Serialize(s, message);
         }
 
-        public static Message Receive(Stream s)
+        public Message Receive(Stream s)
         {
-            BinaryFormatter binaryFormatter = new BinaryFormatter(); 
-            return (Message)binaryFormatter.Deserialize(s);
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            Message m = null;
+            try
+            {
+                m = (Message) binaryFormatter.Deserialize(s);
+                return m;
+            }
+            catch (Exception e)
+            {
+                ClientDecoEvent?.Invoke(this, new DumbMessage("An existing connection was forcibly closed by the remote host"));
+                return null;
+            }
+        }
+        
+        public void Subscription(ClientDecoEventHandler method)
+        {
+            ClientDecoEvent += method;
         }
     }
 }

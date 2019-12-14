@@ -1,4 +1,6 @@
+using System;
 using System.Net.Sockets;
+using System.Threading;
 using Server.Handlers;
 using Shared.Messages;
 
@@ -18,15 +20,22 @@ namespace Server.Controllers
             _session = session;
         }
 
-        public void Run()
+        public void Run(CancellationToken token)
         {
             while (true)
             {
-                // lol
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
             }
         }
         public void Action(object sender, Message message)
         {
+            if (message == null)
+            {
+                Console.WriteLine("VA MANGER TA MADELEINE");
+            }
             Message m = new HandlerFactory().GetHandler(_data, _session).Handle(message);
             
             //Invoke : execute the delegate

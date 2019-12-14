@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Shared.Messages;
 
 namespace Server.Controllers
 {
@@ -37,5 +38,7 @@ namespace Server.Controllers
         }
 
         public ChatData ChatData { get { return _chatData; } }
+        
+       
     }
 }
