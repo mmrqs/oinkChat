@@ -45,6 +45,8 @@ namespace Client
 
             _r.Subscription(Do);
             Subscription(_s.ReceiveMessage);
+
+
         }
 
         public void Run()
@@ -57,6 +59,10 @@ namespace Client
             while (true) 
             {
                 MessageEvent(this, new DumbMessage(Console.ReadLine()));
+                if (_token.IsCancellationRequested)
+                {
+                    break;
+                }
             }
         }
 
@@ -68,6 +74,12 @@ namespace Client
         public void Subscription(MessageEventHandler method)
         {
             MessageEvent += method;
+        }
+
+        private void Stop(object sender, Message pe)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
         }
     }
 }
