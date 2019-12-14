@@ -32,10 +32,6 @@ namespace Server.Controllers
         }
         public void Action(object sender, Message message)
         {
-            if (message == null)
-            {
-                Console.WriteLine("VA MANGER TA MADELEINE");
-            }
             Message m = new HandlerFactory().GetHandler(_data, _session).Handle(message);
             
             //Invoke : execute the delegate

@@ -52,9 +52,10 @@ namespace Client
         public void Run()
         {
             Init();
-
-            Task.Factory.StartNew(() => _s.Run(_token));
-            Task.Factory.StartNew(() => _r.Run(_token));
+            new Thread(() => _s.Run(_token));
+            new Thread(() => _r.Run(_token));
+            //Task.Factory.StartNew(() => _s.Run(_token),_token);
+            //Task.Factory.StartNew(() => _r.Run(_token),_token);
 
             while (true) 
             {
@@ -80,6 +81,8 @@ namespace Client
         {
             _cts.Cancel();
             _cts.Dispose();
+
+           
         }
     }
 }

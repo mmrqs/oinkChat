@@ -18,9 +18,9 @@ namespace Server.Controllers
         private ServerMailer _mailer;
         private Communicator _communicator;
         
-        private Task _receiverTask;
-        private Task _senderTask;
-        private Task _mailerTask;
+        private Thread _receiverTask;
+        private Thread _senderTask;
+        private Thread _mailerTask;
 
         private CancellationTokenSource _cts;
         private CancellationToken _token;
@@ -40,9 +40,9 @@ namespace Server.Controllers
             _session.Sender = new Sender(_client, _communicator);
             _mailer = new ServerMailer(_data, _session);
 
-            _receiverTask = Task.Factory.StartNew(() => _session.Receiver.Run(_token), _token);
-            _senderTask = Task.Factory.StartNew(() => _session.Sender.Run(_token), _token);
-            _mailerTask = Task.Factory.StartNew(() => _mailer.Run(_token), _token);
+            _receiverTask = new Thread(() => _session.Receiver.Run(_token));
+            _senderTask = new Thread(() => _session.Sender.Run(_token));
+            _mailerTask = new Thread(() => _mailer.Run(_token));
         }
 
         public void HandleClient()
