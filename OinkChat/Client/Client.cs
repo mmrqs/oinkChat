@@ -54,9 +54,7 @@ namespace Client
             Init();
             new Thread(() => _s.Run(_token));
             new Thread(() => _r.Run(_token));
-            //Task.Factory.StartNew(() => _s.Run(_token),_token);
-            //Task.Factory.StartNew(() => _r.Run(_token),_token);
-
+            
             while (true) 
             {
                 MessageEvent(this, new DumbMessage(Console.ReadLine()));
