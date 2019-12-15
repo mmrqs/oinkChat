@@ -1,6 +1,6 @@
 using System;
 using Server.Controllers;
-using Server.Models;
+using Shared.Models;
 using Shared.Messages;
 
 namespace Server.Handlers
@@ -16,22 +16,34 @@ namespace Server.Handlers
             _session = session;
         }
         
-        public Message Handle(Message input)
+        public Message Handle(ClientMessage input)
         {
-            string answer = DateTime.Now.ToString("g") + "  " + _session.PseudoClient + "  ";
-            answer += input.ToString();
-            string topic = _session.TopicJoined.Title;
-            
-            if (!input.ToString().Equals("exit"))
+            return (input.KeyWord) switch
             {
-                _session.TopicJoined.SendEventMessage(answer);
-                return null;
-            }
+                "exit" => Exit(),
+                "post" => Send(input.Text()),
+                _ => Help()
+            };
+         }
 
+        public Message Send(string message)
+        {
+            _session.TopicJoined.SendEventMessage(new ChatMessage(_session.User, message));
+            return null;
+        }
+
+        public Message Help()
+        {
+            return new DumbMessage("You can :",
+                "Post a message : post <message>",
+                "Exit the topic : exit");
+        }
+
+        public Message Exit()
+        {
             _session.TopicJoined.Unsubscription(_session.Sender.ReceiveMessage);
             _session.TopicJoined = null;
-            return new DumbMessage("You exited the topic " + topic);
-        
-         }
+            return new DumbMessage("You exited the topic " + _session.TopicJoined.Title);
+        }
     }
 }

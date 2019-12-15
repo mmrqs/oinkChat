@@ -52,7 +52,7 @@ namespace Client
             
             while (true) 
             {
-                MessageEvent(this, new DumbMessage(Console.ReadLine()));
+                MessageEvent(this, new ClientMessage(Console.ReadLine()));
                 if (_cts.Token.IsCancellationRequested)
                 {
                     break;
@@ -62,7 +62,7 @@ namespace Client
 
         public void Do(object sender, Message message)
         {
-            Console.WriteLine("$ " + message.ToString());
+            Console.WriteLine("$ " + message.Text());
         }
 
         public void Subscription(MessageEventHandler method)

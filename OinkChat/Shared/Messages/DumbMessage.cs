@@ -7,16 +7,16 @@ namespace Shared.Messages
     [Serializable]
     public class DumbMessage : Message
     {
-        private string _text;
+        private string[] _lines;
 
-        public DumbMessage(string text)
+        public DumbMessage(params string[] text)
         {
-            _text = text;
+            _lines = text;
         }
 
-        public override string ToString()
+        public override string Text()
         {
-            return _text;
+            return string.Join("\n", _lines);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Server.Controllers
         }
         public void Action(object sender, Message message)
         {
-            Message m = new HandlerFactory().GetHandler(_data, _session).Handle(message);
+            Message m = new HandlerFactory().GetHandler(_data, _session).Handle((ClientMessage)message);
             
             //Invoke : execute the delegate
             if (m != null)

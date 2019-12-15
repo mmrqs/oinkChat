@@ -7,6 +7,6 @@ namespace Shared.Messages
     [Serializable]
     public abstract class Message : EventArgs
     {
-        public abstract new string ToString();
+        public abstract string Text();
     }
 }

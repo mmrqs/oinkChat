@@ -2,9 +2,9 @@ using System;
 using System.Reflection;
 using Shared.Messages;
 
-namespace Server.Models
+namespace Shared.Models
 {
-    public delegate void MessageSenderEventHandler(object sender, ChatMessage e);
+    public delegate void MessageSenderEventHandler(object sender, Message e);
     [Serializable]
     public class Topic
     {
@@ -16,6 +16,11 @@ namespace Server.Models
             Title = title;
         }
 
+        public override string ToString()
+        {
+            return Title;
+        }
+
         public override bool Equals(object obj)
         { 
             return obj is Topic topic &&
@@ -24,26 +29,22 @@ namespace Server.Models
         
         public override int GetHashCode()
         {
-                return HashCode.Combine(Title);
+            return Title.GetHashCode();
         }
         
         public void Subscription(MessageSenderEventHandler method)
         {
-            this.MessageSenderEvent += method;
+            MessageSenderEvent += method;
         }
 
         public void Unsubscription(MessageSenderEventHandler method)
         {
-            this.MessageSenderEvent -= method;
+            MessageSenderEvent -= method;
         }
         
-        public void SendEventMessage(String message)
+        public void SendEventMessage(Message message)
         {
-            if (this.MessageSenderEvent != null)
-            {
-                this.MessageSenderEvent(this, new ChatMessage(message));
-            }
-            
+            MessageSenderEvent?.Invoke(this, message);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Server.Controllers
             _cts.Cancel();
             _cts.Dispose();
 
-            Console.WriteLine(pe.ToString());
+            Console.WriteLine(pe.Text());
         }
     }
 }

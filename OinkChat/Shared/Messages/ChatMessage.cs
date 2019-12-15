@@ -1,4 +1,5 @@
 
+using Shared.Models;
 using System;
 
 namespace Shared.Messages
@@ -6,21 +7,27 @@ namespace Shared.Messages
     [Serializable]
     public class ChatMessage : Message
     {
-        private string _content;
-
-        public string Content
-        {
-            get { return _content; }
-        }
+        private string Content { get; }
         
-        public ChatMessage(string p)
+        private User Sender { get; }
+        private DateTime Date { get; }
+
+        public ChatMessage(User sender, string content)
         {
-            _content = p;
+            Content = content;
+            Sender = sender;
+            Date = DateTime.Now;
+        }
+        public ChatMessage(DateTime date, User sender, string content)
+        {
+            Content = content;
+            Sender = sender;
+            Date = date;
         }
 
-        public override string ToString()
+        public override string Text()
         {
-            return _content;
+            return string.Join(" ", Date.ToString("g"), Sender, "said :", Content);
         }
     }
 }

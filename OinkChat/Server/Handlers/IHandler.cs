@@ -8,6 +8,6 @@ namespace Server.Handlers
 {
     interface IHandler
     {
-        Message Handle(Message input);
+        Message Handle(ClientMessage input);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using Server.Models;
+using Shared.Models;
 using Server.Utilities;
 using System.Collections.Generic;
 using System.Threading;

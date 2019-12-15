@@ -1,5 +1,5 @@
 ﻿using Server.Controllers;
-using Server.Models;
+using Shared.Models;
 using Shared.Messages;
 
 namespace Server.Handlers
@@ -15,21 +15,20 @@ namespace Server.Handlers
             _session = session;
         }
 
-        public Message Handle(Message input)
+        public Message Handle(ClientMessage input)
         {
-            string[] words = input.ToString().Split(" ");
-            if(words.Length != 3)
+            if(input.Length != 2)
             {
-                return new DumbMessage("The correct syntax is <signin|signup> <pseudo> <password>");
+                return new DumbMessage("The correct syntax is {signin|signup} <pseudo> <password>");
             }
 
-            User claim = new User(words[1], words[2]);
+            User claim = new User(input[0], input[1]);
 
-            return (words[0]) switch
+            return (input.KeyWord) switch
             {
                 "signin" => Signin(claim),
                 "signup" => Signup(claim),
-                _ => new DumbMessage("The correct syntax is <signin|signup> <pseudo> <password>"),
+                _ => new DumbMessage("The correct syntax is {signin|signup} <pseudo> <password>"),
             };
         }
 
@@ -38,8 +37,8 @@ namespace Server.Handlers
             if (_data.AuthUser(claim))
             {
                 _session.IsLogged = true;
-                _session.PseudoClient = claim.Pseudo;
-                return new DumbMessage("You have successfully been logged ; welcome, " + claim.Pseudo);
+                _session.User = claim;
+                return new DumbMessage("You have successfully been logged ; welcome, " + claim);
             } else
             {
                 return new DumbMessage("Incorrect pseudo and / or password.");

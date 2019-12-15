@@ -1,6 +1,6 @@
 using System;
 using Server.Controllers;
-using Server.Models;
+using Shared.Models;
 using Shared.Messages;
 
 namespace Server.Handlers
@@ -16,14 +16,13 @@ namespace Server.Handlers
             _session = session;
         }
         
-        public Message Handle(Message input)
+        public Message Handle(ClientMessage input)
         {
-            string[] answer = input.ToString().Split(" ");
-            return (answer[0]) switch
+            return (input.KeyWord) switch
             {
-                "create" => CreateTopic(new Topic(answer[1])),
+                "create" => CreateTopic(new Topic(input[0])),
                 "display" => DisplayTopics(),
-                "join" => JoinTopic(answer[1]),
+                "join" => JoinTopic(input[0]),
                 "help" => HelpMessage(),
                 _ => HelpMessage(),
             };
@@ -53,10 +52,10 @@ namespace Server.Handlers
 
         private Message HelpMessage()
         {
-            return new DumbMessage("You can :\n" +
-                "Create a topic : <create> <topic name>\n" +
-                "Display a list of every topic : <display>\n" +
-                "Join a topic : <join> <topic name>");
+            return new DumbMessage("You can :", 
+                "Create a topic : create <topic name>", 
+                "Display a list of every topic : display", 
+                "Join a topic : join <topic name>");
         }
         
         

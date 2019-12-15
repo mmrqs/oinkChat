@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Server.Models
+namespace Shared.Models
 {
     [Serializable]
     public class User
@@ -23,7 +23,12 @@ namespace Server.Models
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Pseudo, Password);
+            return (Pseudo + Password).GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Pseudo;
         }
     }
 }
