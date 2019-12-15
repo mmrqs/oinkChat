@@ -8,6 +8,7 @@ namespace Shared.Models
     [Serializable]
     public class Topic
     {
+        [field: NonSerialized]
         private event MessageSenderEventHandler MessageSenderEvent;
 
         public string Title { get; set; }
