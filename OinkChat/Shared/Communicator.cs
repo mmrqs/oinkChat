@@ -13,6 +13,7 @@ namespace Shared
         private event ClientDecoEventHandler ClientDecoEvent;
 
         private BinaryFormatter _binaryFormatter = new BinaryFormatter();
+
         public void Send(Stream s, Message message)
         {
             _binaryFormatter.Serialize(s, message);

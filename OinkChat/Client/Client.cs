@@ -23,6 +23,7 @@ namespace Client
         private TcpClient _client;
 
         private CancellationTokenSource _cts;
+        private CancellationToken _token;
         public Client(string hostname, int port)
         {
             _hostname = hostname;
@@ -30,6 +31,7 @@ namespace Client
             _communicator = new Communicator();
 
             _cts = new CancellationTokenSource();
+            _token = _cts.Token;
         }
 
         private void Init()
@@ -47,13 +49,13 @@ namespace Client
         public void Run()
         {
             Init();
-            new Thread(() => _s.Run(_cts.Token)).Start();
-            new Thread(() => _r.Run(_cts.Token)).Start();
+            new Thread(() => _s.Run(_token)).Start();
+            new Thread(() => _r.Run(_token)).Start();
             
             while (true) 
             {
                 MessageEvent(this, new ClientMessage(Console.ReadLine()));
-                if (_cts.Token.IsCancellationRequested)
+                if (_token.IsCancellationRequested)
                 {
                     break;
                 }

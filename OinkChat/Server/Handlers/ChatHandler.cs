@@ -42,8 +42,9 @@ namespace Server.Handlers
         public Message Exit()
         {
             _session.TopicJoined.Unsubscription(_session.Sender.ReceiveMessage);
+            string title = _session.TopicJoined.Title;
             _session.TopicJoined = null;
-            return new DumbMessage("You exited the topic " + _session.TopicJoined.Title);
+            return new DumbMessage("You exited the topic " + title);
         }
     }
 }
