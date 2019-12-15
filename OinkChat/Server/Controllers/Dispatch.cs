@@ -19,7 +19,7 @@ namespace Server.Controllers
         private Communicator _communicator;
         
         private CancellationTokenSource _cts;
-        private CancellationToken _token; 
+        private CancellationToken _token;
 
         public Dispatch(TcpClient client, ChatData chatData)
         {

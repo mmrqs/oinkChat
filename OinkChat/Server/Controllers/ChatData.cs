@@ -17,13 +17,13 @@ namespace Server.Controllers
         private Backer<List<User>> _ub;
         private Backer<List<Topic>> _tb;
         
-        private List<Tuple<String, ServerMailer>> usersOnline;
+        private List<Tuple<String, ServerMailer>> _usersOnline;
         
         public ChatData()
         {
             _ub = new Backer<List<User>>("users", new List<User>());
             _tb = new Backer<List<Topic>>("topics", new List<Topic>());
-            usersOnline = new List<Tuple<string, ServerMailer>>();
+            _usersOnline = new List<Tuple<string, ServerMailer>>();
             
             _usersSemaphore = new Semaphore(1, 1);
             _usersOnlineSemaphore = new Semaphore(1, 1);
@@ -83,15 +83,22 @@ namespace Server.Controllers
         public void AddUserOnline(User user, ServerMailer serverMailer)
         {
             _usersOnlineSemaphore.WaitOne();
-            usersOnline.Add(new Tuple<string, ServerMailer>(user.Pseudo,serverMailer));
+            _usersOnline.Add(new Tuple<string, ServerMailer>(user.Pseudo,serverMailer));
             _usersOnlineSemaphore.Release();
         }
         public List<Tuple<String, ServerMailer>> GetUsersOnline()
         {
             _usersOnlineSemaphore.WaitOne();
-            List<Tuple<String, ServerMailer>> l = usersOnline;
+            List<Tuple<String, ServerMailer>> listUsersOnline = _usersOnline;
             _usersOnlineSemaphore.Release();
-            return l;
-        }  
+            return listUsersOnline;
+        }
+        
+        public void DeleteUserOnline(ServerMailer serverMailer)
+        {
+            _usersOnlineSemaphore.WaitOne();
+            _usersOnline.Remove( _usersOnline.Find(u => u.Item2 == serverMailer));
+            _usersOnlineSemaphore.Release();
+        }
     }
 }

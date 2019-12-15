@@ -24,6 +24,7 @@ namespace Client
 
         private CancellationTokenSource _cts;
         private CancellationToken _token;
+
         public Client(string hostname, int port)
         {
             _hostname = hostname;
@@ -75,9 +76,7 @@ namespace Client
         private void Stop(object sender, Message pe)
         {
             _cts.Cancel();
-            _cts.Dispose();
-
-           
+            _cts.Dispose();           
         }
     }
 }
