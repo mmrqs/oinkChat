@@ -37,7 +37,7 @@ namespace Shared.Messages
 
         public override string Text
         {
-            get { return string.Join(" ", Date.ToString("g"), Topic.Title, Sender, "said :", Content); }
+            get { return string.Join(" ", Date.ToString("g"),"[", Topic.Title,"]", Sender, "said :", Content); }
         }
     }
 }
