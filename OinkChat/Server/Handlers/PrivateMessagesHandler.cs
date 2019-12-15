@@ -28,8 +28,14 @@ namespace Server.Handlers
 
         public Message SendPrivateMessage(String pseudo, String m )
         {
-
-            _data.getSenderUser(pseudo).ReceiveMessage(null, new PrivateMessage(m,_session.User.Pseudo));
+            try
+            {
+                _data.getSenderUser(pseudo).ReceiveMessage(null, new PrivateMessage(m, _session.User.Pseudo));
+            }
+            catch (NullReferenceException)
+            {
+                return new DumbMessage("The user " + pseudo + " doesn't exist or is offline");
+            }           
             return new DumbMessage("Private message has been sent successfully to " + pseudo);
         }
 

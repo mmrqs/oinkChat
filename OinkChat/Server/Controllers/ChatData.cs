@@ -112,10 +112,21 @@ namespace Server.Controllers
 
         public Sender getSenderUser(String pseudo)
         {
+            Sender s = null;
             _usersOnlineSemaphore.WaitOne();
-            Sender s = _usersOnline.Find(u => u.Item1.Equals(pseudo)).Item2;
-            _usersOnlineSemaphore.Release();
+            try {
+                 s = _usersOnline.Find(u => u.Item1.Equals(pseudo)).Item2;
+            }
+            catch(NullReferenceException)
+            {
+                throw new NullReferenceException();              
+            }
+            finally
+            {
+                _usersOnlineSemaphore.Release();                
+            }
             return s;
+
         }
     }
 }
