@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Shared.Messages;
 using System.Linq;
+using Shared.Messagers;
 
 namespace Server.Controllers
 {
@@ -17,13 +18,13 @@ namespace Server.Controllers
         private Backer<List<User>> _ub;
         private Backer<List<Topic>> _tb;
         
-        private List<Tuple<String, ServerMailer>> _usersOnline;
+        private List<Tuple<String, Sender>> _usersOnline;
         
         public ChatData()
         {
             _ub = new Backer<List<User>>("users", new List<User>());
             _tb = new Backer<List<Topic>>("topics", new List<Topic>());
-            _usersOnline = new List<Tuple<string, ServerMailer>>();
+            _usersOnline = new List<Tuple<string, Sender>>();
             
             _usersSemaphore = new Semaphore(1, 1);
             _usersOnlineSemaphore = new Semaphore(1, 1);
@@ -80,25 +81,41 @@ namespace Server.Controllers
             _topicSemaphore.Release();
             return res;
         }
-        public void AddUserOnline(User user, ServerMailer serverMailer)
+        public void AddUserOnline(String pseudo, Sender sender)
         {
             _usersOnlineSemaphore.WaitOne();
-            _usersOnline.Add(new Tuple<string, ServerMailer>(user.Pseudo,serverMailer));
+            _usersOnline.Add(new Tuple<string, Sender>(pseudo, sender));
             _usersOnlineSemaphore.Release();
         }
-        public List<Tuple<String, ServerMailer>> GetUsersOnline()
+        public String GetUsersOnline()
         {
+           String listUsersOnline = "";
+
             _usersOnlineSemaphore.WaitOne();
-            List<Tuple<String, ServerMailer>> listUsersOnline = _usersOnline;
+
+            foreach(Tuple<String, Sender> t in _usersOnline)
+            {
+                listUsersOnline += t.Item1 + Environment.NewLine;
+            }
+
             _usersOnlineSemaphore.Release();
+
             return listUsersOnline;
         }
         
-        public void DeleteUserOnline(ServerMailer serverMailer)
+        public void DeleteUserOnline(Sender receiver)
         {
             _usersOnlineSemaphore.WaitOne();
-            _usersOnline.Remove( _usersOnline.Find(u => u.Item2 == serverMailer));
+            _usersOnline.Remove( _usersOnline.Find(u => u.Item2 == receiver));
             _usersOnlineSemaphore.Release();
+        }
+
+        public Sender getSenderUser(String pseudo)
+        {
+            _usersOnlineSemaphore.WaitOne();
+            Sender s = _usersOnline.Find(u => u.Item1.Equals(pseudo)).Item2;
+            _usersOnlineSemaphore.Release();
+            return s;
         }
     }
 }

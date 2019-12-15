@@ -20,6 +20,7 @@ namespace Shared.Messagers
         {
             while (!token.IsCancellationRequested)
             {
+                //To avoid constant solicitation on CPU 
                 Thread.Sleep(3000);
             }
         }

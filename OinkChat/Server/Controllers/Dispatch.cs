@@ -14,8 +14,10 @@ namespace Server.Controllers
         private ChatData _data;
 
         private DispatchSession _session;
-        private ServerMailer _mailer;
+        
         private Communicator _communicator;
+
+        private ServerMailer _serverMailer;
         
         private CancellationTokenSource _cts;
         private CancellationToken _token;
@@ -33,24 +35,26 @@ namespace Server.Controllers
 
             _session.Receiver = new Receiver(_client, _communicator);
             _session.Sender = new Sender(_client, _communicator);
-            _mailer = new ServerMailer(_data, _session);
+            _serverMailer = new ServerMailer(_data, _session);
         }
 
         public void HandleClient()
         {
             Console.WriteLine(_client + " has been dispatched");
 
-            _session.Receiver.Subscription(_mailer.Action);
-            _mailer.Subscription(_session.Sender.ReceiveMessage);
+            _session.Receiver.Subscription(_serverMailer.Action);
+            _serverMailer.Subscription(_session.Sender.ReceiveMessage);
             _communicator.Subscription(StopClient);
 
             new Thread(() => _session.Receiver.Run(_token)).Start();
             new Thread(() => _session.Sender.Run(_token)).Start();
-            new Thread(() => _mailer.Run(_token)).Start();
+            new Thread(() => _serverMailer.Run(_token)).Start();
         }
 
         public void StopClient(object sender, Message pe)
         {
+            _data.DeleteUserOnline(_session.Sender);
+
             _client.Close();
             _cts.Cancel();
             _cts.Dispose();

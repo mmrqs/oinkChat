@@ -15,6 +15,10 @@ namespace Server.Handlers
             {
                 return new ChatHandler(data, session);
             }
+            else if (keyword.Equals("mp") || keyword.Equals("displayUsers"))
+            {
+                return new PrivateMessagesHandler(data, session);
+            }
             else
             {
                 return new TopicHandler(data, session);
