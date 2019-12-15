@@ -1,14 +1,15 @@
 using System;
-using System.Reflection;
 using Shared.Messages;
 
 namespace Shared.Models
 {
     public delegate void MessageSenderEventHandler(object sender, Message e);
+
     [Serializable]
     public class Topic
     {
         private event MessageSenderEventHandler MessageSenderEvent;
+
         public string Title { get; set; }
 
         public Topic(string title)

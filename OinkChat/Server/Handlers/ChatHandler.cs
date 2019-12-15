@@ -20,31 +20,29 @@ namespace Server.Handlers
         {
             return (input.KeyWord) switch
             {
-                "exit" => Exit(),
-                "post" => Send(input.Text()),
+                "post" => Send(input),
                 _ => Help()
             };
          }
 
-        public Message Send(string message)
+        public Message Send(ClientMessage message)
         {
-            _session.TopicJoined.SendEventMessage(new ChatMessage(_session.User, message));
-            return null;
+            Topic selectedTopic = _data.GetTopicByTitle(message[0]);
+            
+            if (selectedTopic == null)
+                return new DumbMessage("The topic " + message[0] + " doesn't exist.");
+
+            selectedTopic.SendEventMessage(new ChatMessage(_session.User, message.Text));
+            return _session.TopicsJoined.Contains(selectedTopic) ?
+                null : new DumbMessage("WARNING !",
+                "You posted in a topic you have not joined",
+                "You won’t get any answer from the other users");
         }
 
         public Message Help()
         {
             return new DumbMessage("You can :",
-                "Post a message : post <message>",
-                "Exit the topic : exit");
-        }
-
-        public Message Exit()
-        {
-            _session.TopicJoined.Unsubscription(_session.Sender.ReceiveMessage);
-            string title = _session.TopicJoined.Title;
-            _session.TopicJoined = null;
-            return new DumbMessage("You exited the topic " + title);
+                "Post a message : post <message>");
         }
     }
 }

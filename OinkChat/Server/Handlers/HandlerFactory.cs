@@ -5,19 +5,19 @@ namespace Server.Handlers
 {
     class HandlerFactory
     {
-        public IHandler GetHandler(ChatData data, DispatchSession session)
+        public IHandler GetHandler(ChatData data, DispatchSession session, string keyword)
         {
             if(!session.IsLogged)
             {
                 return new LogHandler(data, session);
-            } 
-            else if (session.TopicJoined == null)
+            }
+            else if (keyword.Equals("post"))
             {
-                return new TopicHandler(data, session);
+                return new ChatHandler(data, session);
             }
             else
             {
-                return new ChatHandler(data, session);
+                return new TopicHandler(data, session);
             }
             
             throw new NotImplementedException();

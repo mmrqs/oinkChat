@@ -14,9 +14,9 @@ namespace Shared.Messages
             _lines = text;
         }
 
-        public override string Text()
+        public override string Text
         {
-            return string.Join("\n", _lines);
+            get { return string.Join("\n", _lines); }
         }
     }
 }

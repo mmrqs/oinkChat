@@ -50,9 +50,9 @@ namespace Shared.Messages
             return GetEnumerator();
         }
 
-        public override string Text()
+        public override string Text
         {
-            return PayLoad;
+            get { return PayLoad; }
         }
     }
 }

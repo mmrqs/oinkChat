@@ -55,7 +55,7 @@ namespace Server.Controllers
             _cts.Cancel();
             _cts.Dispose();
 
-            Console.WriteLine(pe.Text());
+            Console.WriteLine(pe.Text);
         }
     }
 }

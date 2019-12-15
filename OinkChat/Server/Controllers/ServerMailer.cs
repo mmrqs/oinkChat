@@ -32,11 +32,15 @@ namespace Server.Controllers
         }
         public void Action(object sender, Message message)
         {
-            Message m = new HandlerFactory().GetHandler(_data, _session).Handle((ClientMessage)message);
+            ClientMessage input = (ClientMessage)message;
+
+            Message output = new HandlerFactory()
+                .GetHandler(_data, _session, input.KeyWord)
+                .Handle(input);
             
             //Invoke : execute the delegate
-            if (m != null)
-                MessageEvent?.Invoke(this, m);
+            if (output != null)
+                MessageEvent?.Invoke(this, output);
         }
         
         public void Subscription(MessageEventHandler method)

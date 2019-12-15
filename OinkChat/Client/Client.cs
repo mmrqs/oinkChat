@@ -64,7 +64,7 @@ namespace Client
 
         public void Do(object sender, Message message)
         {
-            Console.WriteLine("$ " + message.Text());
+            Console.WriteLine("$ " + message.Text);
         }
 
         public void Subscription(MessageEventHandler method)

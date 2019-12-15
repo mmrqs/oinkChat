@@ -25,9 +25,9 @@ namespace Shared.Messages
             Date = date;
         }
 
-        public override string Text()
+        public override string Text
         {
-            return string.Join(" ", Date.ToString("g"), Sender, "said :", Content);
+            get { return string.Join(" ", Date.ToString("g"), Sender, "said :", Content); }
         }
     }
 }
