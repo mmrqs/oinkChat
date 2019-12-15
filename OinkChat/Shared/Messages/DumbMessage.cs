@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Shared.Messages
 {
     [Serializable]
     public class DumbMessage : Message
     {
-        private string[] _lines;
+        protected string[] _lines;
 
         public DumbMessage(params string[] text)
         {
@@ -16,7 +14,7 @@ namespace Shared.Messages
 
         public override string Text
         {
-            get { return string.Join("\n", _lines); }
+            get { return string.Join(Environment.NewLine, _lines); }
         }
     }
 }

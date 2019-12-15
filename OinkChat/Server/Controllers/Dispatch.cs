@@ -40,7 +40,7 @@ namespace Server.Controllers
 
         public void HandleClient()
         {
-            Console.WriteLine(_client + " has been dispatched");
+            Console.WriteLine(_client.Client + " has been dispatched");
 
             _session.Receiver.Subscription(_serverMailer.Action);
             _serverMailer.Subscription(_session.Sender.ReceiveMessage);
@@ -49,6 +49,9 @@ namespace Server.Controllers
             new Thread(() => _session.Receiver.Run(_token)).Start();
             new Thread(() => _session.Sender.Run(_token)).Start();
             new Thread(() => _serverMailer.Run(_token)).Start();
+
+            _session.Sender.ReceiveMessage(this, Pig());
+            _session.Sender.ReceiveMessage(this, Help());
         }
 
         public void StopClient(object sender, Message pe)
@@ -60,6 +63,25 @@ namespace Server.Controllers
             _cts.Dispose();
 
             Console.WriteLine(pe.Text);
+        }
+
+        private Message Pig()
+        {
+            return new DumbMessage("Oink oink !",
+                "             __,---.__",
+                "        __,-'         `-.",
+                "       /_ /_,'           \\&",
+                "       _,''               \\",
+                "      (\")            .    | ",
+                "        ``--|__|--..-'`.__|");
+        }
+
+        private Message Help()
+        {
+            return new DumbMessage("Welcome to OinkChat !",
+                "You can ask for help anytime with the command « help ».",
+                "Be careful, all the commands are case-sensitve !",
+                "Have a nice chat !", "Oink oink !");
         }
     }
 }

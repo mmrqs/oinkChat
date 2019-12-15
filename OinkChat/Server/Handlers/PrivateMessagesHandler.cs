@@ -17,26 +17,29 @@ namespace Server.Handlers
 
         public Message Handle(ClientMessage input)
         {
-            return (input.KeyWord) switch
+            CommandMessage cm = new CommandMessage(input);
+            return input.KeyWord switch
             {
-                "mp" => SendPrivateMessage(input[0], input.Text.Remove(0,input[0].Length)),
+                "mp" => SendPrivateMessage(cm),
                 "displayUsers" => DisplayOnlineUsers(),
-                _ => Help()
+                _ => null
             };
         }
 
-
-        public Message SendPrivateMessage(String pseudo, String m )
+        public Message SendPrivateMessage(CommandMessage message)
         {
+            if (message.Target.Equals("") || message.Length == 0)
+                return Help();
+
             try
             {
-                _data.getSenderUser(pseudo).ReceiveMessage(null, new PrivateMessage(m, _session.User.Pseudo));
+                _data.GetSenderUser(message.Target).ReceiveMessage(null, new PrivateMessage(message.Text, _session.User));
             }
             catch (NullReferenceException)
             {
-                return new DumbMessage("The user " + pseudo + " doesn't exist or is offline");
+                return new DumbMessage("The user " + message.Target + " doesn't exist or is offline");
             }           
-            return new DumbMessage("Private message has been sent successfully to " + pseudo);
+            return new DumbMessage("Private message has been successfully sent to " + message.Target);
         }
 
         public Message DisplayOnlineUsers()
@@ -46,8 +49,7 @@ namespace Server.Handlers
 
         public Message Help()
         {
-            return new DumbMessage("You can :",
-                "Send a private message : mp <pseudo> <message>",
+            return new HelpMessage("Send a private message : mp <pseudo> <message>",
                 "Display the online users : displayUsers");
         }
     }

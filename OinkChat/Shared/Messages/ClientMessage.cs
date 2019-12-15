@@ -8,8 +8,7 @@ namespace Shared.Messages
     [Serializable]
     public class ClientMessage : Message, IEnumerable<string[]>
     {
-        public string KeyWord { get; }
-        protected string PayLoad;
+        public string KeyWord { get; set; }
         protected string[] Words;
 
         public ClientMessage(string text)
@@ -17,14 +16,6 @@ namespace Shared.Messages
             string[] vs = text.Split(' ');
             KeyWord = vs[0];
             Words = vs.Skip(1).ToArray();
-            PayLoad = string.Join(" ", Words);
-        }
-
-        public ClientMessage(string keyword, string text)
-        {
-            KeyWord = keyword;
-            PayLoad = text;
-            Words = text.Split(' ');
         }
 
         protected ClientMessage() { }
@@ -34,13 +25,7 @@ namespace Shared.Messages
             get { return Words[index]; }
         }
 
-        public int Length
-        {
-            get
-            {
-                return Words.Length;
-            }
-        }
+        public int Length { get { return Words.Length; } }
 
         public IEnumerator<string[]> GetEnumerator()
         {
@@ -54,7 +39,7 @@ namespace Shared.Messages
 
         public override string Text
         {
-            get { return PayLoad; }
+            get { return String.Join(" ", Words); }
         }
     }
 }

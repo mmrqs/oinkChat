@@ -18,7 +18,7 @@ namespace Server.Controllers
         private Backer<List<User>> _ub;
         private Backer<List<Topic>> _tb;
         
-        private List<Tuple<String, Sender>> _usersOnline;
+        private List<Tuple<string, Sender>> _usersOnline;
         
         public ChatData()
         {
@@ -51,6 +51,7 @@ namespace Server.Controllers
             _usersSemaphore.Release();
             return inexists;
         }
+
         public bool AddTopic(Topic topic)
         {
             _topicSemaphore.WaitOne();
@@ -63,17 +64,19 @@ namespace Server.Controllers
             _topicSemaphore.Release();
             return inexists;
         }
+
         public string GetTopicList()
         {
             _topicSemaphore.WaitOne();
 
             string list = _tb.Subject.Count > 0 ?
-                string.Join(Environment.NewLine, _tb.Subject.Select(t => t.Title).ToArray()) : 
+                String.Join(Environment.NewLine, _tb.Subject.Select(t => t.Title).ToArray()) : 
                 "No avalaible topics.";
 
             _topicSemaphore.Release();
             return list;
         }
+
         public Topic GetTopicByTitle(string name)
         {
             _topicSemaphore.WaitOne();
@@ -81,19 +84,21 @@ namespace Server.Controllers
             _topicSemaphore.Release();
             return res;
         }
-        public void AddUserOnline(String pseudo, Sender sender)
+
+        public void AddUserOnline(string pseudo, Sender sender)
         {
             _usersOnlineSemaphore.WaitOne();
             _usersOnline.Add(new Tuple<string, Sender>(pseudo, sender));
             _usersOnlineSemaphore.Release();
         }
-        public String GetUsersOnline()
+
+        public string GetUsersOnline()
         {
-           String listUsersOnline = "";
+            string listUsersOnline = "";
 
             _usersOnlineSemaphore.WaitOne();
 
-            foreach(Tuple<String, Sender> t in _usersOnline)
+            foreach(Tuple<string, Sender> t in _usersOnline)
             {
                 listUsersOnline += t.Item1 + Environment.NewLine;
             }
@@ -106,18 +111,18 @@ namespace Server.Controllers
         public void DeleteUserOnline(Sender receiver)
         {
             _usersOnlineSemaphore.WaitOne();
-            _usersOnline.Remove( _usersOnline.Find(u => u.Item2 == receiver));
+            _usersOnline.Remove(_usersOnline.Find(u => u.Item2 == receiver));
             _usersOnlineSemaphore.Release();
         }
 
-        public Sender getSenderUser(String pseudo)
+        public Sender GetSenderUser(string pseudo)
         {
             Sender s = null;
             _usersOnlineSemaphore.WaitOne();
             try {
                  s = _usersOnline.Find(u => u.Item1.Equals(pseudo)).Item2;
             }
-            catch(NullReferenceException)
+            catch (NullReferenceException)
             {
                 throw new NullReferenceException();              
             }
@@ -126,7 +131,6 @@ namespace Server.Controllers
                 _usersOnlineSemaphore.Release();                
             }
             return s;
-
         }
     }
 }

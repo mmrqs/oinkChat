@@ -14,19 +14,6 @@ namespace Shared.Messages
 
         private Topic Topic { get; }
 
-        public ChatMessage(User sender, string content)
-        {
-            Content = content;
-            Sender = sender;
-            Date = DateTime.Now;
-        }
-        public ChatMessage(DateTime date, User sender, string content)
-        {
-            Content = content;
-            Sender = sender;
-            Date = date;
-        }
-
         public ChatMessage(User sender, string content, Topic topic)
         {
             Content = content;

@@ -17,10 +17,8 @@ namespace Server.Handlers
 
         public Message Handle(ClientMessage input)
         {
-            if(input.Length != 2)
-            {
-                return new DumbMessage("The correct syntax is {signin|signup} <pseudo> <password>");
-            }
+            if (input.Length != 2)
+                return Help();
 
             User claim = new User(input[0], input[1]);
 
@@ -28,7 +26,7 @@ namespace Server.Handlers
             {
                 "signin" => Signin(claim),
                 "signup" => Signup(claim),
-                _ => new DumbMessage("The correct syntax is {signin|signup} <pseudo> <password>"),
+                _ => Help()
             };
         }
 
@@ -43,7 +41,7 @@ namespace Server.Handlers
                 return new DumbMessage("You have successfully been logged ; welcome, " + claim);
             } else
             {
-                return new DumbMessage("Incorrect pseudo and / or password.");
+                return new DumbMessage("Incorrect pseudo and / or password");
             }
         }
 
@@ -51,7 +49,13 @@ namespace Server.Handlers
         {
              return _data.AddUser(claim) ? 
                 new DumbMessage("An account was created for user " + claim.Pseudo) :
-                new DumbMessage("The user " + claim.Pseudo + " already exists."); ;
+                new DumbMessage("The user " + claim.Pseudo + " already exists"); ;
+        }
+
+        private Message Help()
+        {
+            return new HelpMessage("Sign in : signin <pseudo> <password>",
+                "Sign up : signup <pseudo> <password>");
         }
     }
 }

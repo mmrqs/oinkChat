@@ -1,23 +1,30 @@
-﻿using System;
+﻿using Shared.Models;
+using System;
 
 namespace Shared.Messages
 {
     [Serializable]
     public class PrivateMessage : Message
     {
-        private String _sender;
-        private String _content;
+        private User _sender;
+        private string _content;
 
-        public PrivateMessage(String text, String pseudo)
+        private DateTime Date;
+
+        public PrivateMessage(string text, User sender)
         {
-            _sender = pseudo;
+            _sender = sender;
             _content = text;
+            Date = DateTime.Now;
         }
 
         public override string Text
         {
-            get { return _sender + " send you a new message" + Environment.NewLine 
-                    +_sender +" : "+ _content; }
+            get 
+            {
+                return String.Join(" ", _sender, "sent you a new message", 
+                    Environment.NewLine, Date.ToString("g"), _sender, ":", _content);
+            }
         }
 
     }

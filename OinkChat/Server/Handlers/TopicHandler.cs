@@ -1,4 +1,3 @@
-using System;
 using Server.Controllers;
 using Shared.Models;
 using Shared.Messages;
@@ -18,13 +17,13 @@ namespace Server.Handlers
         
         public Message Handle(ClientMessage input)
         {
-            return (input.KeyWord) switch
+            return input.KeyWord switch
             {
                 "create" => CreateTopic(new Topic(input[0])),
                 "display" => DisplayTopics(),
                 "join" => JoinTopic(input[0]),
                 "help" => HelpMessage(),
-                _ => HelpMessage(),
+                _ => HelpMessage()
             };
         }
 
@@ -37,7 +36,7 @@ namespace Server.Handlers
 
         private Message DisplayTopics()
         {
-            return new DumbMessage(_data.GetTopicList());
+            return new DumbMessage("The availaible topics are :", _data.GetTopicList());
         }
 
         private Message JoinTopic(string name)
@@ -55,10 +54,13 @@ namespace Server.Handlers
 
         private Message HelpMessage()
         {
-            return new DumbMessage("You can :", 
-                "Create a topic : create <topic name>", 
+            return new HelpMessage("Create a topic : create <topic name>", 
                 "Display a list of every topic : display", 
-                "Join a topic : join <topic name>");
+                "Join a topic : join <topic name>", 
+                "Post a message : post <topic> <message>",
+                "Exit the topic : exit <topic>",
+                "Send a private message : mp <pseudo> <message>",
+                "Display the online users : displayUsers");
         }
     }
 }

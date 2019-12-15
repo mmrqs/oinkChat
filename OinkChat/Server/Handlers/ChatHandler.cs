@@ -18,16 +18,19 @@ namespace Server.Handlers
         
         public Message Handle(ClientMessage input)
         {
-            ClientChatMessage cm = new ClientChatMessage(input);
+            CommandMessage cm = new CommandMessage(input);
+            if (cm.Target.Equals(""))
+                return Help();
+
             return (input.KeyWord) switch
             {
                 "exit" => ExitTopic(cm.Target),
-                "post" => Send(cm),
-                _ => Help()
+                "post" => Post(cm),
+                _ => null
             };
          }
 
-        public Message Send(ClientChatMessage message)
+        public Message Post(CommandMessage message)
         {
             Topic selectedTopic = _data.GetTopicByTitle(message.Target);
             
@@ -56,10 +59,9 @@ namespace Server.Handlers
             return new DumbMessage("You exited the topic " + name);
         }
 
-        public Message Help()
+        private Message Help()
         {
-            return new DumbMessage("You can :",
-                "Post a message : post <topic> <message>",
+            return new HelpMessage("Post a message : post <topic> <message>",
                 "Exit the topic : exit <topic>");
         }
     }
