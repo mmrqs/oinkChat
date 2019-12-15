@@ -9,8 +9,8 @@ namespace Shared.Messages
     public class ClientMessage : Message, IEnumerable<string[]>
     {
         public string KeyWord { get; }
-        private string PayLoad;
-        private string[] Words;
+        protected string PayLoad;
+        protected string[] Words;
 
         public ClientMessage(string text)
         {
@@ -26,6 +26,8 @@ namespace Shared.Messages
             PayLoad = text;
             Words = text.Split(' ');
         }
+
+        protected ClientMessage() { }
 
         public string this[int index]
         {

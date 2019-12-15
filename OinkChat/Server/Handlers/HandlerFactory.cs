@@ -11,7 +11,7 @@ namespace Server.Handlers
             {
                 return new LogHandler(data, session);
             }
-            else if (keyword.Equals("post"))
+            else if (keyword.Equals("post") || keyword.Equals("exit"))
             {
                 return new ChatHandler(data, session);
             }
