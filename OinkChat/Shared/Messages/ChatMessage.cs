@@ -32,6 +32,7 @@ namespace Shared.Messages
             Content = content;
             Sender = sender;
             Topic = topic;
+            Date = DateTime.Now;
         }
 
         public override string Text
