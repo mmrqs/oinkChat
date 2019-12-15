@@ -34,7 +34,7 @@ namespace Server.Handlers
             if (selectedTopic == null)
                 return new DumbMessage("The topic " + message.Target + " doesn't exist.");
 
-            selectedTopic.SendEventMessage(new ChatMessage(_session.User, message.Text));
+            selectedTopic.SendEventMessage(new ChatMessage(_session.User,message.Text, selectedTopic));
             return _session.TopicsJoined.Contains(selectedTopic) ?
                 null : new DumbMessage("WARNING !",
                 "You posted in a topic you have not joined",

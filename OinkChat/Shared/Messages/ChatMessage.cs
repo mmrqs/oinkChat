@@ -12,6 +12,8 @@ namespace Shared.Messages
         private User Sender { get; }
         private DateTime Date { get; }
 
+        private Topic Topic { get; }
+
         public ChatMessage(User sender, string content)
         {
             Content = content;
@@ -25,9 +27,16 @@ namespace Shared.Messages
             Date = date;
         }
 
+        public ChatMessage(User sender, string content, Topic topic)
+        {
+            Content = content;
+            Sender = sender;
+            Topic = topic;
+        }
+
         public override string Text
         {
-            get { return string.Join(" ", Date.ToString("g"), Sender, "said :", Content); }
+            get { return string.Join(" ", Date.ToString("g"), Topic.Title, Sender, "said :", Content); }
         }
     }
 }
