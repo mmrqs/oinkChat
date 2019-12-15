@@ -38,6 +38,8 @@ namespace Server.Handlers
             {
                 _session.IsLogged = true;
                 _session.User = claim;
+
+                //_data.AddUserOnline(_session.User.Pseudo, _session.)
                 return new DumbMessage("You have successfully been logged ; welcome, " + claim);
             } else
             {

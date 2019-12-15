@@ -20,7 +20,7 @@ namespace Shared.Messagers
         {
             while (!token.IsCancellationRequested)
             {
-
+                Thread.Sleep(3000);
             }
         }
 
