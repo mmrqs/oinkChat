@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Threading;
 using Shared;
 using Shared.Messages;
-using System.Threading.Tasks;
 
 namespace Server.Controllers
 {
@@ -49,6 +48,7 @@ namespace Server.Controllers
             new Thread(() => _session.Sender.Run(_token)).Start();
             new Thread(() => _mailer.Run(_token)).Start();
         }
+
         public void StopClient(object sender, Message pe)
         {
             _client.Close();

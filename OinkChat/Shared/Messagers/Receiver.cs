@@ -21,20 +21,13 @@ namespace Shared.Messagers
 
         public void Run(CancellationToken token)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                if (token.IsCancellationRequested)
-                {
-                    break;
-                }
-                else 
-                { 
-                    Message input = _communicator.Receive(_client.GetStream());
+                Message input = _communicator.Receive(_client.GetStream());
                 
-                    if (input != null && MessageReceivedEvent != null)
-                    {
-                        MessageReceivedEvent(this, input);
-                    }
+                if (input != null && MessageReceivedEvent != null)
+                {
+                    MessageReceivedEvent(this, input);
                 }
             }
         }

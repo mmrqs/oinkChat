@@ -4,7 +4,6 @@ using Shared.Messages;
 using System;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Client
 {
@@ -53,13 +52,9 @@ namespace Client
             new Thread(() => _s.Run(_token)).Start();
             new Thread(() => _r.Run(_token)).Start();
             
-            while (true) 
+            while (!_token.IsCancellationRequested) 
             {
                 MessageEvent(this, new ClientMessage(Console.ReadLine()));
-                if (_token.IsCancellationRequested)
-                {
-                    break;
-                }
             }
         }
 

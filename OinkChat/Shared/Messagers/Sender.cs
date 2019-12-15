@@ -18,12 +18,9 @@ namespace Shared.Messagers
 
         public void Run(CancellationToken token)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                if (token.IsCancellationRequested)
-                {
-                    break;
-                }
+
             }
         }
 
