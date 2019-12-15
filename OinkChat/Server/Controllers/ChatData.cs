@@ -23,8 +23,10 @@ namespace Server.Controllers
         {
             _ub = new Backer<List<User>>("users", new List<User>());
             _tb = new Backer<List<Topic>>("topics", new List<Topic>());
+            usersOnline = new List<Tuple<string, ServerMailer>>();
             
             _usersSemaphore = new Semaphore(1, 1);
+            _usersOnlineSemaphore = new Semaphore(1, 1);
             _topicSemaphore = new Semaphore(1, 1);
         }
 
@@ -60,7 +62,6 @@ namespace Server.Controllers
             _topicSemaphore.Release();
             return inexists;
         }
- 
         public string GetTopicList()
         {
             _topicSemaphore.WaitOne();
@@ -72,7 +73,6 @@ namespace Server.Controllers
             _topicSemaphore.Release();
             return list;
         }
-
         public Topic GetTopicByTitle(string name)
         {
             _topicSemaphore.WaitOne();
@@ -80,24 +80,18 @@ namespace Server.Controllers
             _topicSemaphore.Release();
             return res;
         }
-
         public void AddUserOnline(User user, ServerMailer serverMailer)
         {
             _usersOnlineSemaphore.WaitOne();
             usersOnline.Add(new Tuple<string, ServerMailer>(user.Pseudo,serverMailer));
             _usersOnlineSemaphore.Release();
         }
-
         public List<Tuple<String, ServerMailer>> GetUsersOnline()
         {
             _usersOnlineSemaphore.WaitOne();
             List<Tuple<String, ServerMailer>> l = usersOnline;
             _usersOnlineSemaphore.Release();
             return l;
-        }
-        
-            
-        
-         
+        }  
     }
 }

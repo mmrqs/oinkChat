@@ -34,7 +34,6 @@ namespace Shared.Messagers
                     if (input != null && MessageReceivedEvent != null)
                     {
                         MessageReceivedEvent(this, input);
-                        input = null;
                     }
                 }
             }

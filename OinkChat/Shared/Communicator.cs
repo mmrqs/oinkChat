@@ -11,23 +11,20 @@ namespace Shared
     public class Communicator
     {
         private event ClientDecoEventHandler ClientDecoEvent;
-        
+
+        private BinaryFormatter _binaryFormatter = new BinaryFormatter();
         public void Send(Stream s, Message message)
         {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            binaryFormatter.Serialize(s, message);
+            _binaryFormatter.Serialize(s, message);
         }
 
         public Message Receive(Stream s)
         {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            Message m = null;
             try
             {
-                m = (Message) binaryFormatter.Deserialize(s);
-                return m;
+                return (Message)_binaryFormatter.Deserialize(s);
             }
-            catch (Exception e)
+            catch
             {
                 ClientDecoEvent?.Invoke(this, new DumbMessage("An existing connection was forcibly closed by the remote host"));
                 return null;

@@ -18,31 +18,19 @@ namespace Server.Controllers
         private ServerMailer _mailer;
         private Communicator _communicator;
         
-        private Thread _receiverTask;
-        private Thread _senderTask;
-        private Thread _mailerTask;
-
         private CancellationTokenSource _cts;
-        private CancellationToken _token;
-
         public Dispatch(TcpClient client, ChatData chatData)
         {
             _client = client;
             _data = chatData;
 
             _cts = new CancellationTokenSource();
-            _token = _cts.Token;
-
-
             _communicator = new Communicator();
             _session = new DispatchSession();
+
             _session.Receiver = new Receiver(_client, _communicator);
             _session.Sender = new Sender(_client, _communicator);
             _mailer = new ServerMailer(_data, _session);
-
-            _receiverTask = new Thread(() => _session.Receiver.Run(_token));
-            _senderTask = new Thread(() => _session.Sender.Run(_token));
-            _mailerTask = new Thread(() => _mailer.Run(_token));
         }
 
         public void HandleClient()
@@ -52,8 +40,11 @@ namespace Server.Controllers
             _session.Receiver.Subscription(_mailer.Action);
             _mailer.Subscription(_session.Sender.ReceiveMessage);
             _communicator.Subscription(StopClient);
-        }
 
+            new Thread(() => _session.Receiver.Run(_cts.Token)).Start();
+            new Thread(() => _session.Sender.Run(_cts.Token)).Start();
+            new Thread(() => _mailer.Run(_cts.Token)).Start();
+        }
         public void StopClient(object sender, Message pe)
         {
             _client.Close();
