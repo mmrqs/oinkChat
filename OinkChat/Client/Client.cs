@@ -33,7 +33,14 @@ namespace Client
             _cts = new CancellationTokenSource();
             _token = _cts.Token;
         }
-
+        
+        /// <summary>
+        /// Initialize the client.
+        /// Create a new Sender and Receiver.
+        /// Subscribe every component one to another :
+        /// - Client subscribes to Receiver
+        /// - Sender subscribe to Client
+        /// </summary>
         private void Init()
         {
             _client = new TcpClient(_hostname, _port);
@@ -46,6 +53,11 @@ namespace Client
             Subscription(_s.ReceiveMessage);
         }
 
+        /// <summary>
+        /// It runs the Init()
+        /// It starts the threads Sender and Receiver
+        /// It enters in an infinite loop (while the cancelation isn't requested) where it listens the keyboard.
+        /// </summary>
         public void Run()
         {
             Init();
@@ -58,16 +70,30 @@ namespace Client
             }
         }
 
+        /// <summary>
+        /// It display the received message from Receiver.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="message"></param>
         public void Do(object sender, Message message)
         {
             Console.WriteLine("$ " + message.Text);
         }
 
+        /// <summary>
+        /// It allows the Sender subscription to the Client.
+        /// </summary>
+        /// <param name="method"></param>
         public void Subscription(MessageEventHandler method)
         {
             MessageEvent += method;
         }
-
+        
+        /// <summary>
+        /// It allows to stop all the threads related to the client
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="pe"></param>
         private void Stop(object sender, Message pe)
         {
             _cts.Cancel();

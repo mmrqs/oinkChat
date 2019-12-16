@@ -20,6 +20,15 @@ namespace Server.Controllers
         
         private List<Tuple<string, Sender>> _usersOnline;
         
+        /// <summary>
+        /// Constructor of the class ChatData
+        /// It initializes :
+        /// - The list of all created Users
+        /// - The list of all created Topics
+        /// - The list of all the online Users
+        ///
+        /// - The semaphores constraining the access to ressources
+        /// </summary>
         public ChatData()
         {
             _ub = new Backer<List<User>>("users", new List<User>());
@@ -31,6 +40,11 @@ namespace Server.Controllers
             _topicSemaphore = new Semaphore(1, 1);
         }
 
+        /// <summary>
+        /// Authenticates the user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>true if the user is successfully authenticated</returns>
         public bool AuthUser(User user)
         {
             _usersSemaphore.WaitOne();
@@ -39,6 +53,11 @@ namespace Server.Controllers
             return result != null;
         }
 
+        /// <summary>
+        /// Add an user into the list of existing users if it doesn't already exist
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>return true if the user doesn't exist and is added</returns>
         public bool AddUser(User user)
         {
             _usersSemaphore.WaitOne();
@@ -51,7 +70,12 @@ namespace Server.Controllers
             _usersSemaphore.Release();
             return inexists;
         }
-
+        
+        /// <summary>
+        /// Add a Topic into the list of existing Topics if it doesn't already exist
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <returns>return true if the Topic doesn't exist and is added</returns>
         public bool AddTopic(Topic topic)
         {
             _topicSemaphore.WaitOne();
@@ -65,6 +89,10 @@ namespace Server.Controllers
             return inexists;
         }
 
+        /// <summary>
+        /// Get the list of existing topics
+        /// </summary>
+        /// <returns>The list of existing topics</returns>
         public string GetTopicList()
         {
             _topicSemaphore.WaitOne();
@@ -77,6 +105,11 @@ namespace Server.Controllers
             return list;
         }
 
+        /// <summary>
+        /// Get a Topic according to his title
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>The topic</returns>
         public Topic GetTopicByTitle(string name)
         {
             _topicSemaphore.WaitOne();
@@ -85,6 +118,11 @@ namespace Server.Controllers
             return res;
         }
 
+        /// <summary>
+        /// Add an online user to the list of the online users
+        /// </summary>
+        /// <param name="pseudo"></param>
+        /// <param name="sender">We add his sender in order to contact him through private messages</param>
         public void AddUserOnline(string pseudo, Sender sender)
         {
             _usersOnlineSemaphore.WaitOne();
@@ -92,6 +130,10 @@ namespace Server.Controllers
             _usersOnlineSemaphore.Release();
         }
 
+        /// <summary>
+        /// Get the list of the online users.
+        /// </summary>
+        /// <returns>A String containing all the users with new lines</returns>
         public string GetUsersOnline()
         {
             string listUsersOnline = "";
@@ -108,6 +150,10 @@ namespace Server.Controllers
             return listUsersOnline;
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="receiver"></param>
         public void DeleteUserOnline(Sender receiver)
         {
             _usersOnlineSemaphore.WaitOne();
@@ -115,9 +161,15 @@ namespace Server.Controllers
             _usersOnlineSemaphore.Release();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pseudo"></param>
+        /// <returns>Sender</returns>
+        /// <exception cref="NullReferenceException">If the user isn't in the online users list, we throw a nullReferenceException</exception>
         public Sender GetSenderUser(string pseudo)
         {
-            Sender s = null;
+            Sender s;
             _usersOnlineSemaphore.WaitOne();
             try {
                  s = _usersOnline.Find(u => u.Item1.Equals(pseudo)).Item2;
