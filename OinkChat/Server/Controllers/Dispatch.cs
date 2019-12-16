@@ -15,15 +15,11 @@ namespace Server.Controllers
         ///
         /// It initializes :
         /// 
-        /// - client : The TcpClient
         /// - data : All the server data
-        /// - cts : CancellationTokenSource
-        /// - token : CancellationToken
-        /// - communicator : The object allowing the transmission of messages between the server and the client
         /// - session : All the client data
         /// - session.Receiver : stores in the session the object allowing the reception of a message
         /// - session.Sender : stores in the session the object allowing the sending of messages
-        /// - serverMailer : the object that will handle the message, create an output and send it to the sender object
+        /// - Mailer : the object that will handle the message, create an output and send it to the sender object
         /// 
         /// </summary>
         /// <param name="client"> The TcpClient </param>
@@ -40,11 +36,10 @@ namespace Server.Controllers
         }
 
         /// <summary>
-        /// Allows the client handling.
+        /// override the methods Run in Runner
         ///
-        /// It subscribes the messengers one to another and runs then each in their own thread.
-        ///
-        /// It displays the welcome messages.
+        /// Run the method Run in Runner
+        /// Display the welcome messages
         /// </summary>
         public override void Run()
         {
@@ -57,7 +52,9 @@ namespace Server.Controllers
         }
 
         /// <summary>
+        /// Delete the user from the online users list
         /// It stops all the threads related to the client.
+        /// Send a message to the server notifying it that a client exit the chat
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="pe"></param>

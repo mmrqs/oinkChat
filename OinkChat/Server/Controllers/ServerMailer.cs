@@ -7,21 +7,12 @@ using Shared.Messages;
 
 namespace Server.Controllers
 {
-    /// <summary>
-    /// The delegate of the event MessageEvent.
-    /// It delegates to the sender method : receiveMessage
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    public delegate void MessageProcessedEventHandler(object sender, Message e);
 
     /// <summary>
     /// Will handle the message received from the Receiver, create an output and send it to the Sender
     /// </summary>
     class ServerMailer : Mailer
     {
-        private event MessageProcessedEventHandler InputProcessedEvent;
-        
         private ChatData _data;
         private DispatchSession _session;
         private HandlerFactory _factory;
