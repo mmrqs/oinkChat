@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Shared.Messages;
 
 namespace Server.Controllers
 {
@@ -33,7 +32,7 @@ namespace Server.Controllers
                 TcpClient client = _listener.AcceptTcpClient();
                 Console.WriteLine("Connected to " + client);
 
-                new Thread(new Dispatch(client, _chatData).HandleClient).Start();
+                new Thread(new Dispatch(client, _chatData).Run).Start();
             }
         }
 

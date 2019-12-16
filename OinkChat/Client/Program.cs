@@ -1,5 +1,5 @@
 ﻿using Shared;
-using System;
+using System.Net.Sockets;
 
 namespace Client
 {
@@ -7,8 +7,7 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            Client client = new Client(Constants.Hostname, Constants.Port);
-            client.Run();
+            new Client(new TcpClient(Constants.Hostname, Constants.Port)).Run();
         }
     }
 }

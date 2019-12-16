@@ -1,68 +1,43 @@
 ﻿using Shared.Messagers;
 using System;
 using System.Net.Sockets;
-using System.Threading;
-using Shared;
 using Shared.Messages;
 
 namespace Server.Controllers
 {
-    class Dispatch
+    class Dispatch : Runner
     {
-        private TcpClient _client;
-
         private ChatData _data;
-
         private DispatchSession _session;
-        
-        private Communicator _communicator;
 
-        private ServerMailer _serverMailer;
-        
-        private CancellationTokenSource _cts;
-        private CancellationToken _token;
-
-        public Dispatch(TcpClient client, ChatData chatData)
+        public Dispatch(TcpClient client, ChatData data) : base(client, null)
         {
-            _client = client;
-            _data = chatData;
+            _data = data;
 
-            _cts = new CancellationTokenSource();
-            _token = _cts.Token;
-
-            _communicator = new Communicator();
             _session = new DispatchSession();
+            _session.Receiver = Receiver;
+            _session.Sender = Sender;
 
-            _session.Receiver = new Receiver(_client, _communicator);
-            _session.Sender = new Sender(_client, _communicator);
-            _serverMailer = new ServerMailer(_data, _session);
+            Mailer = new ServerMailer(_data, _session);
         }
 
-        public void HandleClient()
+        public override void Run()
         {
-            Console.WriteLine(_client.Client + " has been dispatched");
+            Console.WriteLine(Client.Client + " has been dispatched");
 
-            _session.Receiver.Subscription(_serverMailer.Action);
-            _serverMailer.Subscription(_session.Sender.ReceiveMessage);
-            _communicator.Subscription(StopClient);
-
-            new Thread(() => _session.Receiver.Run(_token)).Start();
-            new Thread(() => _session.Sender.Run(_token)).Start();
-            new Thread(() => _serverMailer.Run(_token)).Start();
+            base.Run();
 
             _session.Sender.ReceiveMessage(this, Pig());
             _session.Sender.ReceiveMessage(this, Help());
         }
 
-        public void StopClient(object sender, Message pe)
+        public override void Stop(object sender, Message message)
         {
             _data.DeleteUserOnline(_session.Sender);
 
-            _client.Close();
-            _cts.Cancel();
-            _cts.Dispose();
+            base.Stop(sender, message);
 
-            Console.WriteLine(pe.Text);
+            Console.WriteLine(message.Text);
         }
 
         private Message Pig()

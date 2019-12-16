@@ -6,13 +6,14 @@ using Shared.Messages;
 
 namespace Shared.Messagers
 {
-    public delegate void MessageReceivedEventHandler(object sender, Message e);
+    public delegate void MessageReceivedEventHandler(object sender, Message message);
     public class Receiver
     {
         public event MessageReceivedEventHandler MessageReceivedEvent;
 
         private TcpClient _client;
         private Communicator _communicator;
+
         public Receiver(TcpClient client, Communicator communicator)
         {
             _client = client;
@@ -25,10 +26,8 @@ namespace Shared.Messagers
             {
                 Message input = _communicator.Receive(_client.GetStream());
                 
-                if (input != null && MessageReceivedEvent != null)
-                {
-                    MessageReceivedEvent(this, input);
-                }
+                if (input != null)
+                    MessageReceivedEvent?.Invoke(this, input);
             }
         }
         
