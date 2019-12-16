@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Server.Controllers
 {
+    /// <summary>
+    /// Stores all the client related data.
+    /// </summary>
     class DispatchSession
     {
         public bool IsLogged { get; set; }
