@@ -28,7 +28,7 @@ namespace Server.Handlers
 
         public Message SendPrivateMessage(CommandMessage message)
         {
-            if (message.Target.Equals("") || message.Length == 0)
+            if (message.Target.Equals("") || message.Length == 0 || message[0].Equals(""))
                 return Help();
 
             try
@@ -44,7 +44,7 @@ namespace Server.Handlers
 
         public Message DisplayOnlineUsers()
         {
-            return new DumbMessage(_data.GetUsersOnline());
+            return new DumbMessage("Online users are :", _data.GetUsersOnline());
         }
 
         public Message Help()

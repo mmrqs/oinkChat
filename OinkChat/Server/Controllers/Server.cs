@@ -6,7 +6,7 @@ using Shared.Messages;
 
 namespace Server.Controllers
 {
-    class ChatServer
+    class Server
     {
         private int _port;
         private IPAddress _address;
@@ -15,7 +15,7 @@ namespace Server.Controllers
 
         private ChatData _chatData;
 
-        public ChatServer(string address, int port)
+        public Server(string address, int port)
         {
             _address = IPAddress.Parse(address);
             _port = port;
@@ -38,7 +38,5 @@ namespace Server.Controllers
         }
 
         public ChatData ChatData { get { return _chatData; } }
-        
-       
     }
 }

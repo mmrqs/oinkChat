@@ -8,7 +8,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            ChatServer server = new ChatServer(Constants.Hostname, Constants.Port);
+            Controllers.Server server = new Controllers.Server(Constants.Hostname, Constants.Port);
             server.Start();
         }
     }
