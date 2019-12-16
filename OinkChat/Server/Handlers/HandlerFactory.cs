@@ -3,8 +3,19 @@ using System;
 
 namespace Server.Handlers
 {
+    /// <summary>
+    /// Dispatch to a corresponding handler
+    /// </summary>
     class HandlerFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"> all the server data </param>
+        /// <param name="session"> all the client data </param>
+        /// <param name="keyword"> a keyword that represents an action to perform</param>
+        /// <returns>return an handler </returns>
+        /// <exception cref="NotImplementedException"></exception>
         public IHandler GetHandler(ChatData data, DispatchSession session, string keyword)
         {
             if(!session.IsLogged)

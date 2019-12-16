@@ -9,19 +9,36 @@ namespace Server.Handlers
     {
         private ChatData _data;
         private DispatchSession _session;
-
+        
+        /// <summary>
+        /// Class constructor
+        ///
+        /// It initializes :
+        ///
+        /// - data : all the server data
+        /// - session : all the data related to the client
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="session"></param>
         public ChatHandler(ChatData data, DispatchSession session)
         {
             _data = data;
             _session = session;
         }
         
+        /// <summary>
+        /// It handle the message sent by the client
+        /// </summary>
+        /// <param name="input">The message sent by the client</param>
+        /// <returns>a Message</returns>
         public Message Handle(ClientMessage input)
         {
             CommandMessage cm = new CommandMessage(input);
+            
+            //if the content of the client Message is null, we return help
             if (cm.Target.Equals(""))
                 return Help();
-
+            
             return (input.KeyWord) switch
             {
                 "exit" => ExitTopic(cm.Target),
@@ -30,6 +47,15 @@ namespace Server.Handlers
             };
          }
 
+        /// <summary>
+        /// Allows the client to post in a topic
+        ///
+        /// 1 - We extract the name topic from the message and get its corresponding object
+        /// 2 - If the topic isn't null, we send an event notifying all the users (more specificly their object Sender) who subscribed to our topic
+        /// that a new message arrived
+        /// </summary>
+        /// <param name="message"> CommandMessage </param>
+        /// <returns> a warning message if the user try to post in a topic that he didn't join null otherwise </returns>
         public Message Post(CommandMessage message)
         {
             Topic selectedTopic = _data.GetTopicByTitle(message.Target);
@@ -41,9 +67,18 @@ namespace Server.Handlers
             return _session.TopicsJoined.Contains(selectedTopic) ?
                 null : new DumbMessage("WARNING !",
                 "You posted in a topic you have not joined",
-                "You won’t get any answer from the other users");
+                "You wonï¿½t get any answer from the other users");
         }
 
+        /// <summary>
+        /// Allows the client to exit a topic
+        ///
+        /// 1 - We extract the name topic from the message and get its corresponding object
+        /// 2 - If the topic isn't null and the client has joined the topic, we remove the topic from his list of topics joined in this session and
+        /// we unsubscribe the event linked to the topic
+        /// </summary>
+        /// <param name="name"> Name of the topic the client want to exit </param>
+        /// <returns> return a validation message or an error message </returns>
         public Message ExitTopic(string name)
         {
             Topic selectedTopic = _data.GetTopicByTitle(name);
@@ -59,6 +94,10 @@ namespace Server.Handlers
             return new DumbMessage("You exited the topic " + name);
         }
 
+        /// <summary>
+        /// Helper corresponding to the ChatHandler class
+        /// </summary>
+        /// <returns> an help message </returns>
         private Message Help()
         {
             return new HelpMessage("Post a message : post <topic> <message>",

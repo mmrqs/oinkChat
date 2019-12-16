@@ -5,6 +5,10 @@ using System.Threading;
 
 namespace Server.Utilities
 {
+    /// <summary>
+    /// It allows us to persist the data using serialization;
+    /// </summary>
+    /// <typeparam name="T">List Topic or List User</typeparam>
     class Backer<T>
     {
         private T _subject;
@@ -14,6 +18,20 @@ namespace Server.Utilities
 
         private BinaryFormatter _bf;
 
+        /// <summary>
+        /// Constructor of the Backer class
+        /// 
+        /// It initializes :
+        /// 
+        /// - subject : the list of items (Topic and User)
+        /// - fileName : the file in which the data is stored (user or topic)
+        /// - fileSemaphore : a semaphore that restrains the access to the file.
+        /// - bf : the binaryFormatter
+        ///
+        /// It runs the "Read" function.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="subject"></param>
         public Backer(string fileName, T subject)
         {
             _subject = subject;
@@ -26,18 +44,9 @@ namespace Server.Utilities
             Read();
         }
 
-        public bool HasData() 
-        {
-            _fileSemaphore.WaitOne();
-
-            FileStream fs = new FileStream(_fileName, FileMode.OpenOrCreate);
-            long len = fs.Length;
-            fs.Close();
-
-            _fileSemaphore.Release();
-            return len != 0;
-        }
-
+        /// <summary>
+        /// Serializes the subject in its own file.
+        /// </summary>
         public void Backup()
         {
             _fileSemaphore.WaitOne();
@@ -50,6 +59,9 @@ namespace Server.Utilities
             Console.WriteLine(_fileName + " backed up !");
         }
 
+        /// <summary>
+        /// Deserializes the subject from its own file.
+        /// </summary>
         public void Read()
         {
             _fileSemaphore.WaitOne();
@@ -61,6 +73,9 @@ namespace Server.Utilities
             _fileSemaphore.Release();
         }
 
+        /// <summary>
+        /// It returns the subject (the User list or Topic list)
+        /// </summary>
         public T Subject
         {
             get { return _subject; }

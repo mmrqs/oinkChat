@@ -14,6 +14,17 @@ namespace Server.Controllers
 
         private ChatData _chatData;
 
+        /// <summary>
+        /// Class constructor
+        ///
+        /// It initializes :
+        /// - address : Server IP address
+        /// - port : server port
+        /// - chatData : all the server data
+        ///  
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="port"></param>
         public Server(string address, int port)
         {
             _address = IPAddress.Parse(address);
@@ -22,6 +33,11 @@ namespace Server.Controllers
             _chatData = new ChatData();
         }
 
+        /// <summary>
+        /// It starts the server.
+        ///
+        /// While the server runs, it accepts clients and dispatch them in a thread.
+        /// </summary>
         public void Start()
         {
             _listener = new TcpListener(_address, _port);
@@ -35,7 +51,5 @@ namespace Server.Controllers
                 new Thread(new Dispatch(client, _chatData).Run).Start();
             }
         }
-
-        public ChatData ChatData { get { return _chatData; } }
     }
 }

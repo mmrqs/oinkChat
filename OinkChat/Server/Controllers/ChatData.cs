@@ -9,6 +9,9 @@ using Shared.Messagers;
 
 namespace Server.Controllers
 {
+    /// <summary>
+    /// It allows us to manipulate the topic list, user list and user online list
+    /// </summary>
     class ChatData
     {
         private Semaphore _usersSemaphore;

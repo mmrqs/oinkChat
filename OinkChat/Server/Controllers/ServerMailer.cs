@@ -1,17 +1,43 @@
+using System;
+using System.Net.Sockets;
+using System.Threading;
 using Server.Handlers;
 using Shared.Messagers;
 using Shared.Messages;
 
 namespace Server.Controllers
 {
-    public delegate void MessageEventHandler(object sender, Message e);
+    /// <summary>
+    /// The delegate of the event MessageEvent.
+    /// It delegates to the sender method : receiveMessage
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    public delegate void MessageProcessedEventHandler(object sender, Message e);
 
+    /// <summary>
+    /// Will handle the message received from the Receiver, create an output and send it to the Sender
+    /// </summary>
     class ServerMailer : Mailer
     {
+        private event MessageProcessedEventHandler InputProcessedEvent;
+        
         private ChatData _data;
         private DispatchSession _session;
         private HandlerFactory _factory;
         
+        /// <summary>
+        /// Constructor
+        ///
+        /// It initializes :
+        ///
+        /// - data : all the server data
+        /// - session : all the informations related to the client
+        /// - factory : object that allows the dispatching in the corresponding handler
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="session"></param>
         public ServerMailer(ChatData data, DispatchSession session)
         {
             _data = data;
@@ -19,6 +45,14 @@ namespace Server.Controllers
             _factory = new HandlerFactory();
         }
 
+
+        /// <summary>
+        /// 1 - Receives the message from the Receiver.
+        /// 2 - Creates an output by getting the Handler for the message and calling the corresponding Handle method in the Handler.
+        /// 3 - if the output isn't null, it raises an event that will be caught by the Sender transmitting the output.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="message">The message send by the Receiver</param>
         public override void OnMessageReceived(object sender, Message message)
         {
             ClientMessage input = (ClientMessage)message;
