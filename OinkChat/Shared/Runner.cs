@@ -1,8 +1,9 @@
 ﻿using Shared.Messages;
+using Shared.Messagers;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace Shared.Messagers
+namespace Shared
 {
     public abstract class Runner
     {

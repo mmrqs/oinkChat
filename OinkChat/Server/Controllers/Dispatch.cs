@@ -1,4 +1,5 @@
 ﻿using Shared.Messagers;
+using Shared;
 using System;
 using System.Net.Sockets;
 using Shared.Messages;
