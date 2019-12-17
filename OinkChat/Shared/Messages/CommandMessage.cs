@@ -2,6 +2,10 @@
 
 namespace Shared.Messages
 {
+    /// <summary>
+    /// Command message inherit from ClientMessage.
+    /// It allows us to get the target of the message
+    /// </summary>
     public class CommandMessage : ClientMessage
     {
         public string Target { get; }
