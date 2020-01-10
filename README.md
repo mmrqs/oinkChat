@@ -25,7 +25,3 @@ We opted for
 > You are free to add new functions to your app, but don't do that unless you've already implemented the ones given above. A graphical interface can be added to your app but this has to be the last phase in your project.
 > 
 > You should start this project by doing a full object oriented design of your desired app. This has to be documented in your report and presented to your supervisor (use UML diagrams for that purpose; use-case, sequence, state-transition, class diagrams).
-
-# Why Oink Chat ?
-
-We love pigs ! 🐷
