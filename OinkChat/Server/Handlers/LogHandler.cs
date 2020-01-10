@@ -72,7 +72,7 @@ namespace Server.Handlers
         {
              return _data.AddUser(claim) ? 
                 new DumbMessage("An account was created for user " + claim.Pseudo) :
-                new DumbMessage("The user " + claim.Pseudo + " already exists"); ;
+                new DumbMessage("The user " + claim.Pseudo + " already exists");
         }
 
         /// <summary>
