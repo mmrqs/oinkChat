@@ -8,9 +8,7 @@ We opted for
 - .NET Core 3
 
 # Instructions
-
-> **Prof said :**
-> 
+ 
 > In this project, you are asked to create a network based  multithreaded client-server chat app.
 > 
 > Chatters establish a connection with the server and can do the following :
